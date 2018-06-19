@@ -2,1452 +2,1445 @@
 #include <stdlib.h>
 #include <math.h>
 
-/*ART MAP FUZZY - VERSAO 1.0*/
-/*DESENVOLVIDO POR: LUCAS DA SILVA*/
-/*E-MAIL: LUCAS21021996@GMAIL.COM*/
-/*UNISALESIANO ARACATUBA-SP, JUNHO DE 2018*/
+/*ART MAP FUZZY - V 1.0*/
+/*AUTHOR: LUCAS DA SILVA*/
+/*E-MAIL: MENCETHEDEVELOPER@GMAIL.COM*/
+/*UNISALESIANO ARACATUBA-SP, JUNE OF 2018*/
 
 using namespace std;
 
-#define verificaMenorValorVetor(vetor, tamanho, valor) valor = -1; for(int i = 0; i < tamanho; i++){ if (valor < vetor[i]) valor = vetor[i];}
+#define verifyTheLowerValueArray(array, size, value) value = -1; for(int i = 0; i < size; i++){ if (value < array[i]) value = array[i];}
 
 int main(){
 	
-	/*INICIALIZACAO DE VARIAVEIS, JA PRE-DEFINIDOS, EH POSSIVEL ALTERAR DEPOIS EM TEMPO DE EXECUCAO*/
-	int limiteMaximoDimensao = 9; /*ESTE VALOR NAO EH ALTERADO EM REAL-TIME, ELE INDICA O LIMITE DE DIMENSAO DE MATRIZES*/
-	int tamanhoMatrizAX = 3;
-	int tamanhoMatrizAY = 3;
-	int tamanhoMatrizBX = 3;
-	int tamanhoMatrizBY = 1;
+	/*VALUES INITIALIZATION*/
+	int limitMaxDimension = 9; /*THIS VALUE CANNOT BE EDITED IN REAL TIME*/
+	int sizeMatrixAX = 3;
+	int sizeMatrixAY = 3;
+	int sizeMatrixBX = 3;
+	int sizeMatrixBY = 1;
 	
 	float pa = 0.95;
 	float pb = 1;
 	float pba = 0.95;
 	float alpha = 0.1;
 	float beta = 1;
-	int iteracoes = 1;
+	int iteractions = 1;
 	
-	float matrizInicialA[limiteMaximoDimensao][limiteMaximoDimensao] = {{2,3,5},{6,4,1},{9,8,7}};
-	float matrizInicialB[limiteMaximoDimensao][limiteMaximoDimensao] = {{4},{5},{8}};
-	
-	
-	float matrizInicialWa[limiteMaximoDimensao][limiteMaximoDimensao*2];
-	float matrizInicialWb[limiteMaximoDimensao][limiteMaximoDimensao*2];	
-	float matrizInicialWab[limiteMaximoDimensao][limiteMaximoDimensao];
-	
-	/*MODO DE RECONHECIMENTO - FICA SALVO NA MEMORIA*/
-	int tamanhoMatrizAXReconhecimento = 0;
-	int tamanhoMatrizAYReconhecimento = 0;
-	int tamanhoMatrizBXReconhecimento = 0;
-	int tamanhoMatrizBYReconhecimento = 0;
-	
-	float matrizReconhecimentoWa[limiteMaximoDimensao][limiteMaximoDimensao*2];
-	float matrizReconhecimentoWb[limiteMaximoDimensao][limiteMaximoDimensao*2];	
-	float matrizReconhecimentoWab[limiteMaximoDimensao][limiteMaximoDimensao];
+	float matrixInitialA[limitMaxDimension][limitMaxDimension] = {{2,3,5},{6,4,1},{9,8,7}};
+	float matrixInitialB[limitMaxDimension][limitMaxDimension] = {{4},{5},{8}};
 	
 	
-	for (int i = 0;i < limiteMaximoDimensao;i++){
-		for (int j = 0; j < limiteMaximoDimensao*2;j++){
-			matrizInicialWa[i][j] = 1;
-			matrizReconhecimentoWa[i][j] = 1;
+	float matrixInitialWa[limitMaxDimension][limitMaxDimension*2];
+	float matrixInitialWb[limitMaxDimension][limitMaxDimension*2];	
+	float matrixInitialWab[limitMaxDimension][limitMaxDimension];
+	
+	/*RECOGNTION MODE - THIS VALUES ARE SAVED ON THE SYSTEM*/
+	int sizeMatrixAXRecogntion = 0;
+	int sizeMatrixAYRecogntion = 0;
+	int sizeMatrixBXRecogntion = 0;
+	int sizeMatrixBYRecogntion = 0;
+	
+	float matrixRecogntionWa[limitMaxDimension][limitMaxDimension*2];
+	float matrixRecogntionWb[limitMaxDimension][limitMaxDimension*2];	
+	float matrixRecogntionWab[limitMaxDimension][limitMaxDimension];
+	
+	
+	for (int i = 0;i < limitMaxDimension;i++){
+		for (int j = 0; j < limitMaxDimension*2;j++){
+			matrixInitialWa[i][j] = 1;
+			matrixRecogntionWa[i][j] = 1;
 		}
 	}
-	for (int i = 0;i < limiteMaximoDimensao;i++){
-		for (int j = 0; j < limiteMaximoDimensao*2;j++){
-			matrizInicialWb[i][j] = 1;
-			matrizReconhecimentoWb[i][j] = 1;
+	for (int i = 0;i < limitMaxDimension;i++){
+		for (int j = 0; j < limitMaxDimension*2;j++){
+			matrixInitialWb[i][j] = 1;
+			matrixRecogntionWb[i][j] = 1;
 		}
 	}
-	for (int i = 0;i < limiteMaximoDimensao;i++){
-		for (int j = 0; j < limiteMaximoDimensao;j++){
-			matrizInicialWab[i][j] = 1;
-			matrizReconhecimentoWab[i][j] = 1;
+	for (int i = 0;i < limitMaxDimension;i++){
+		for (int j = 0; j < limitMaxDimension;j++){
+			matrixInitialWab[i][j] = 1;
+			matrixRecogntionWab[i][j] = 1;
 		}
 	}
 
-	float somatorio = 0;
+	float sum = 0;
 	
 	/**/
-	/*INICIO DO LOOP DO MENU E AFINS*/
+	/*MAIN MENU LOOP*/
 	/**/
 	
-	int opcao = -1;
-	while (opcao != 0){
+	int option = -1;
+	while (option != 0){
 		system("cls");
-		opcao = 1;
+		option = 1;
 		cout << "////////////////////////////////////////////////////////////" << endl;
-		cout << "//// DESENVOLVIMENTO DE REDE NEURAL - ART MAP FUZZY 1.0 ////" << endl;
+		cout << "//// NEURAL NETWORK DEVELOPMENT     - ART MAP FUZZY 1.0 ////" << endl;
 		cout << "////////////////////////////////////////////////////////////" << endl;
-		cout << "//// AUTOR: LUCAS DA SILVA - R.A.: 203417               ////" << endl;
-		cout << "//// ENGENHARIA DA COMPUTACAO - 9TH TERMO               ////" << endl;
-		cout << "//// ORIENTACAO: JAMES CLAUTON DA SILVA                 ////" << endl;
+		cout << "//// AUTHOR: LUCAS DA SILVA - R.A.: 203417              ////" << endl;
+		cout << "//// COMPUTER ENGINEERING - 9TH SEMESTER                ////" << endl;
+		cout << "//// ADVISOR: MR. JAMES CLAUTON DA SILVA                ////" << endl;
 		cout << "////////////////////////////////////////////////////////////" << endl;
-		cout << "//// JUNHO, 14 DE 2018 - JUNHO, 16 DE 2018              ////" << endl;
+		cout << "//// JUNE, 19 OF 2018                                   ////" << endl;
 		cout << "////////////////////////////////////////////////////////////" << endl;
 		cout << endl;
 		cout << "////////////////////////////////////////////////////////////" << endl;
-		cout << "//// SELECIONE COM SEU TECLADO UMA DAS OPCOES ABAIXO:   ////" << endl;
+		cout << "//// CHOOSE WITH YOUR KEYBOARD A OPTION BELOW:          ////" << endl;
 		cout << "////////////////////////////////////////////////////////////" << endl;
-		cout << "//// [ 1 ] - REALIZAR ITERACOES / EXECUTAR              ////" << endl;
-		cout << "//// [ 2 ] - EDITAR VALORES (ROH, ALPHA E BETA)         ////" << endl;
-		cout << "//// [ 3 ] - EDITAR MATRIZES (A E B)                    ////" << endl;
-		cout << "//// [ 4 ] - EDITAR MATRIZES (WA, WB E WAB)             ////" << endl;
-		cout << "//// [ 5 ] - CONSULTAR VALORES                          ////" << endl;
-		cout << "//// [ 6 ] - DEFINIR QUANTIDADE DE ITERACOES            ////" << endl;
-		cout << "//// [ 7 ] - FAZER O RECONHECIMENTO                     ////" << endl;
-		cout << "//// [ 8 ] - SOBRE O PROJETO                            ////" << endl;
-		cout << "//// [ 0 ] - SAIR                                       ////" << endl;
+		cout << "//// [ 1 ] - EXECUTE / DO ITERACTIONS                   ////" << endl;
+		cout << "//// [ 2 ] - EDIT VALUES (ROH, ALPHA E BETA)            ////" << endl;
+		cout << "//// [ 3 ] - EDIT MATRIX (A AND B)                      ////" << endl;
+		cout << "//// [ 4 ] - EDIT MATRIX (WA, WB AND WAB)               ////" << endl;
+		cout << "//// [ 5 ] - CHECK VALUES                               ////" << endl;
+		cout << "//// [ 6 ] - EDIT THE VALUE OF ITERACTIONS              ////" << endl;
+		cout << "//// [ 7 ] - RECOGNITION MODE                           ////" << endl;
+		cout << "//// [ 8 ] - ABOUT THE PROJECT                          ////" << endl;
+		cout << "//// [ 0 ] - EXIT                                       ////" << endl;
 		cout << "////////////////////////////////////////////////////////////" << endl;
 		cout << endl;
-		cin >> opcao;
+		cin >> option;
 		
 		system("cls");
 		
-		switch (opcao){
+		switch (option){
 			case 8:{
 				cout << "////////////////////////////////////////////////////////////" << endl;
 				cout << "A R T     M A P     F U Z Z Y  " << endl;
-				cout << "V E R S A O  -  1 . 0" << endl << endl;
+				cout << "V E R S I O N  -  1 . 0" << endl << endl;
 				cout << "////////////////////////////////////////////////////////////" << endl;
-				cout << "DESENVOLVIDO POR LUCAS DA SILVA" << endl << endl;
-				cout << "E-MAIL : LUCAS21021996@GMAIL.COM" << endl << "PROFESSOR JAMES CLAUTON DA SILVA" << endl;
-				cout << "UNISALESIANO ARACATUBA - SP " << endl << " CURSO DE ENGENHARIA DA COMPUTACAO " << endl;
-				cout << "DATA: JUNHO, 16 DE 2018 " << endl << endl;
+				cout << "DEVELOPED BY LUCAS DA SILVA" << endl << endl;
+				cout << "E-MAIL : MENCETHEDEVELOPER@GMAIL.COM" << endl << "ADVISOR: MR JAMES CLAUTON DA SILVA" << endl;
+				cout << "UNISALESIANO ARACATUBA - SP " << endl << " COURSE OF COMPUTER ENGINEERING - 9TH SEMESTER " << endl;
+				cout << "DATE: JUNE, 19 OF 2018 " << endl << endl;
 				cout << "////////////////////////////////////////////////////////////" << endl;
-				cout << "PROJETO DESENVOLVIDO PARA AVALIACAO DA MATERIA DE SISTEMAS INTELIGENTES" << endl;
-				cout << "CASO OCORRA ALGUM PROBLEMA NA EXECUCAO DO PROJETO, POR FAVOR ENTRAR EM CONTATO NO MEU EMAIL" << endl;
-				cout << "MEU GITHUB: www.github.com/LucasMence " << endl << endl;
+				cout << "PROJECT DEVELOPED FOR THE DISCIPLINE OF 'SISTEMAS INTELIGENTES' - ARTIFICIAL INTELIGENCE " << endl;
+				cout << "IF YOU SEE SOME PROBLEM ON THE PROJECT, PLEASE SEND ME A E-MAIL" << endl;
+				cout << "MY GITHUB: www.github.com/LucasMence " << endl << endl;
 				cout << "////////////////////////////////////////////////////////////" << endl;
 				system("pause");
 				break;
 			}
 			case 7: {
 				cout << "////////////////////////////////////////////////////////////" << endl;
-				float matrizA[tamanhoMatrizAX][tamanhoMatrizAY];
-				float matrizB[tamanhoMatrizBX][tamanhoMatrizBY];
+				float matrixA[sizeMatrixAX][sizeMatrixAY];
+				float matrixB[sizeMatrixBX][sizeMatrixBY];
 				
-				for (int i = 0;i < tamanhoMatrizAX;i++){
-					for (int j = 0; j < tamanhoMatrizAY;j++){
-						matrizA[i][j] = matrizInicialA[i][j];
+				for (int i = 0;i < sizeMatrixAX;i++){
+					for (int j = 0; j < sizeMatrixAY;j++){
+						matrixA[i][j] = matrixInitialA[i][j];
 					}
 				}
 				
-				for (int i = 0;i < tamanhoMatrizBX;i++){
-					for (int j = 0; j < tamanhoMatrizBY;j++){
-						matrizB[i][j] = matrizInicialB[i][j];
+				for (int i = 0;i < sizeMatrixBX;i++){
+					for (int j = 0; j < sizeMatrixBY;j++){
+						matrixB[i][j] = matrixInitialB[i][j];
 					}
 				}
 							
-				float matrizWa[tamanhoMatrizAX][tamanhoMatrizAY*2];
-				float matrizWb[tamanhoMatrizBX][tamanhoMatrizBY*2];	
-				float matrizWab[tamanhoMatrizBX][tamanhoMatrizAY];
+				float matrixWa[sizeMatrixAX][sizeMatrixAY*2];
+				float matrixWb[sizeMatrixBX][sizeMatrixBY*2];	
+				float matrixWab[sizeMatrixBX][sizeMatrixAY];
 				
-				for (int i = 0;i < tamanhoMatrizAX;i++){
-					for (int j = 0; j < tamanhoMatrizAY*2;j++){
-						matrizWa[i][j] = matrizInicialWa[i][j];
+				for (int i = 0;i < sizeMatrixAX;i++){
+					for (int j = 0; j < sizeMatrixAY*2;j++){
+						matrixWa[i][j] = matrixInitialWa[i][j];
 					}
 				}
-				for (int i = 0;i < tamanhoMatrizBX;i++){
-					for (int j = 0; j < tamanhoMatrizBY*2;j++){
-						matrizWb[i][j] = matrizInicialWb[i][j];
+				for (int i = 0;i < sizeMatrixBX;i++){
+					for (int j = 0; j < sizeMatrixBY*2;j++){
+						matrixWb[i][j] = matrixInitialWb[i][j];
 					}
 				}
-				for (int i = 0;i < tamanhoMatrizBX;i++){
-					for (int j = 0; j < tamanhoMatrizAY*2;j++){
-						matrizWab[i][j] = matrizInicialWab[i][j];
+				for (int i = 0;i < sizeMatrixBX;i++){
+					for (int j = 0; j < sizeMatrixAY*2;j++){
+						matrixWab[i][j] = matrixInitialWab[i][j];
 					}
 				}
 				
-				float matrizIA[tamanhoMatrizAX][tamanhoMatrizAY*2];
-				float matrizIB[tamanhoMatrizBX][tamanhoMatrizBY*2];	
+				float matrixIA[sizeMatrixAX][sizeMatrixAY*2];
+				float matrixIB[sizeMatrixBX][sizeMatrixBY*2];	
 	
-				float matrizIAc[tamanhoMatrizAX][tamanhoMatrizAY];
-				float matrizIBc[tamanhoMatrizBX][tamanhoMatrizBY];	
+				float matrixIAc[sizeMatrixAX][sizeMatrixAY];
+				float matrixIBc[sizeMatrixBX][sizeMatrixBY];	
 				
-				for (int i = 0;i < tamanhoMatrizAX;i++){
-					for (int j = 0; j < tamanhoMatrizAY;j++){
-						somatorio += matrizA[i][j];	
+				for (int i = 0;i < sizeMatrixAX;i++){
+					for (int j = 0; j < sizeMatrixAY;j++){
+						sum += matrixA[i][j];	
 					}
 				}	
-				cout << "matriz Ia " << endl;
-				for (int i = 0;i < tamanhoMatrizAX;i++){
-					for (int j = 0; j < tamanhoMatrizAY;j++){
-						matrizIA[i][j] = (matrizA[i][j] / somatorio);
-						cout << " " << matrizIA[i][j] << " ";
+				cout << "matrix Ia " << endl;
+				for (int i = 0;i < sizeMatrixAX;i++){
+					for (int j = 0; j < sizeMatrixAY;j++){
+						matrixIA[i][j] = (matrixA[i][j] / sum);
+						cout << " " << matrixIA[i][j] << " ";
 					}
 					cout << endl;
 				}
-				somatorio = 0;	
-				for (int i = 0;i < tamanhoMatrizBX;i++){
-					for (int j = 0; j < tamanhoMatrizBY;j++){
-						somatorio += matrizB[i][j];	
+				sum = 0;	
+				for (int i = 0;i < sizeMatrixBX;i++){
+					for (int j = 0; j < sizeMatrixBY;j++){
+						sum += matrixB[i][j];	
 					}
 				}	
-				cout << "matriz Ib " << endl;
-				for (int i = 0;i < tamanhoMatrizBX;i++){
-					for (int j = 0; j < tamanhoMatrizBY;j++){
-						matrizIB[i][j] = (matrizB[i][j] / somatorio);
-						cout << " " << matrizIB[i][j] << " ";
+				cout << "matrix Ib " << endl;
+				for (int i = 0;i < sizeMatrixBX;i++){
+					for (int j = 0; j < sizeMatrixBY;j++){
+						matrixIB[i][j] = (matrixB[i][j] / sum);
+						cout << " " << matrixIB[i][j] << " ";
 					}
 					cout << endl;
 				}
 				
 				
 				
-				cout << "matriz Iac " << endl;
-				for (int i = 0;i < tamanhoMatrizAX;i++){
-					for (int j = 0; j < tamanhoMatrizAY;j++){
-						matrizIAc[i][j] = (1 - matrizIA[i][j]);
-						cout << " " << matrizIAc[i][j] << " ";
+				cout << "matrix Iac " << endl;
+				for (int i = 0;i < sizeMatrixAX;i++){
+					for (int j = 0; j < sizeMatrixAY;j++){
+						matrixIAc[i][j] = (1 - matrixIA[i][j]);
+						cout << " " << matrixIAc[i][j] << " ";
 					}
 					cout << endl;
 				}
 				
-				cout << "matriz Ibc " << endl;
-				for (int i = 0;i < tamanhoMatrizBX;i++){
-					for (int j = 0; j < tamanhoMatrizBY;j++){
-						matrizIBc[i][j] = (1 - matrizIB[i][j]);
-						cout << " " << matrizIBc[i][j] << " ";
+				cout << "matrix Ibc " << endl;
+				for (int i = 0;i < sizeMatrixBX;i++){
+					for (int j = 0; j < sizeMatrixBY;j++){
+						matrixIBc[i][j] = (1 - matrixIB[i][j]);
+						cout << " " << matrixIBc[i][j] << " ";
 					}
 					cout << endl;
 				}
 				
-				for (int i = 0;i < tamanhoMatrizAX;i++){
-					for (int j = 0; j < tamanhoMatrizAY;j++){
-						matrizIA[i][j+tamanhoMatrizAY] = matrizIAc[i][j];
+				for (int i = 0;i < sizeMatrixAX;i++){
+					for (int j = 0; j < sizeMatrixAY;j++){
+						matrixIA[i][j+sizeMatrixAY] = matrixIAc[i][j];
 					}
 				}
 				
-				for (int i = 0;i < tamanhoMatrizBX;i++){
-					for (int j = 0; j < tamanhoMatrizBY;j++){
-						matrizIB[i][j+tamanhoMatrizBY] = matrizIBc[i][j];
+				for (int i = 0;i < sizeMatrixBX;i++){
+					for (int j = 0; j < sizeMatrixBY;j++){
+						matrixIB[i][j+sizeMatrixBY] = matrixIBc[i][j];
 					}
 				}
 				
-				cout << "matriz Ia definitivo " << endl;
-				for (int i = 0;i < tamanhoMatrizAX;i++){
-					for (int j = 0; j < tamanhoMatrizAY*2;j++){
-						cout << " " << matrizIA[i][j] << " ";
-					}
-					cout << endl;
-				}
-				
-				cout << "matriz Ib definitivo " << endl;
-				for (int i = 0;i < tamanhoMatrizBX;i++){
-					for (int j = 0; j < tamanhoMatrizBY*2;j++){
-						cout << " " << matrizIB[i][j] << " ";
+				cout << "matrix Ia definitive " << endl;
+				for (int i = 0;i < sizeMatrixAX;i++){
+					for (int j = 0; j < sizeMatrixAY*2;j++){
+						cout << " " << matrixIA[i][j] << " ";
 					}
 					cout << endl;
 				}
 				
-				float vetorTa[tamanhoMatrizAX];
-				for (int i = 0; i < tamanhoMatrizAX;i++){
-					vetorTa[i] = 0;
+				cout << "matrix Ib definitive " << endl;
+				for (int i = 0;i < sizeMatrixBX;i++){
+					for (int j = 0; j < sizeMatrixBY*2;j++){
+						cout << " " << matrixIB[i][j] << " ";
+					}
+					cout << endl;
 				}
 				
-				float vetorTb[tamanhoMatrizBX];
-				for (int i = 0; i < tamanhoMatrizBX;i++){
-					vetorTb[i] = 0;
+				float arrayTa[sizeMatrixAX];
+				for (int i = 0; i < sizeMatrixAX;i++){
+					arrayTa[i] = 0;
+				}
+				
+				float arrayTb[sizeMatrixBX];
+				for (int i = 0; i < sizeMatrixBX;i++){
+					arrayTb[i] = 0;
 				}
 				
 				/*art a*/
-				cout << "calculando T de A " << endl;
-				for (int i = 0; i < tamanhoMatrizAX;i++){
-					float somatorioLinha = 0;
-					float somatorioLinhaW = 0;
-					for (int j = 0; j < tamanhoMatrizAY*2;j++){
-						int menorValorAtual = 0;
-						int vetorUso[2] = {matrizIA[i][j],matrizWa[i][j]};
-						verificaMenorValorVetor(vetorUso,2,menorValorAtual);
-						somatorioLinha +=  menorValorAtual;
-					//	somatorioLinha += (pow(matrizIA[i][j], matrizWa[i][j]));
-						somatorioLinhaW += matrizWa[i][j]; 
+				cout << "calculating T of A " << endl;
+				for (int i = 0; i < sizeMatrixAX;i++){
+					float lineSum = 0;
+					float lineSumW = 0;
+					for (int j = 0; j < sizeMatrixAY*2;j++){
+						int lowerCurrentValue = 0;
+						int arrayLowerValue[2] = {matrixIA[i][j],matrixWa[i][j]};
+						verifyTheLowerValueArray(arrayLowerValue,2,lowerCurrentValue);
+						lineSum +=  lowerCurrentValue;
+						lineSumW += matrixWa[i][j]; 
 					}
-					vetorTa[i] = somatorioLinha / (alpha + somatorioLinhaW);
-					cout << "t " << i << " " << vetorTa[i] << endl;
+					arrayTa[i] = lineSum / (alpha + lineSumW);
+					cout << "t " << i << " " << arrayTa[i] << endl;
 				
 				}
 				
 				/*art b*/	
-				cout << "calculando T de B " << endl;
-				for (int i = 0; i < tamanhoMatrizBX;i++){
-					float somatorioLinha = 0;
-					float somatorioLinhaW = 0;
-					for (int j = 0; j < tamanhoMatrizBY*2;j++){
-					//	somatorioLinha += (pow(matrizIB[i][j], matrizWb[i][j]));
-						int menorValorAtual = 0;
-						int vetorUso[2] = {matrizIB[i][j],matrizWb[i][j]};
-						verificaMenorValorVetor(vetorUso,2,menorValorAtual);
-						somatorioLinha +=  menorValorAtual;
-						somatorioLinhaW += matrizWb[i][j]; 
+				cout << "calculating T of B " << endl;
+				for (int i = 0; i < sizeMatrixBX;i++){
+					float lineSum = 0;
+					float lineSumW = 0;
+					for (int j = 0; j < sizeMatrixBY*2;j++){
+						int lowerCurrentValue = 0;
+						int arrayLowerValue[2] = {matrixIB[i][j],matrixWb[i][j]};
+						verifyTheLowerValueArray(arrayLowerValue,2,lowerCurrentValue);
+						lineSum +=  lowerCurrentValue;
+						lineSumW += matrixWb[i][j]; 
 					}
-					vetorTb[i] = somatorioLinha / (alpha + somatorioLinhaW);
-					cout << "t " << i << " " << vetorTb[i] << endl;
+					arrayTb[i] = lineSum / (alpha + lineSumW);
+					cout << "t " << i << " " << arrayTb[i] << endl;
 				}
 				
-				/*categoria ativa*/
-				int categoriaAtivaA = -1;
-				int categoriaAtivaB = -1;
+				/*category Active*/
+				int categoryActiveA = -1;
+				int categoryActiveB = -1;
 				
-				float maiorValor = -1;
-				for (int i = 0; i < tamanhoMatrizAX;i++){
-					if (vetorTa[i] > maiorValor){
-						cout << " vetorTa " << vetorTa[i] << endl;
-						cout << " maiorValor " << maiorValor << endl;
+				float biggestValue = -1;
+				for (int i = 0; i < sizeMatrixAX;i++){
+					if (arrayTa[i] > biggestValue){
+						cout << " arrayTa " << arrayTa[i] << endl;
+						cout << " biggestValue " << biggestValue << endl;
 						
-						if (vetorTa[i] > (maiorValor+0.001)){
-							maiorValor = vetorTa[i];
-							categoriaAtivaA = i;
+						if (arrayTa[i] > (biggestValue+0.001)){
+							biggestValue = arrayTa[i];
+							categoryActiveA = i;
 							
-							cout << " + " << vetorTa[i] << endl;
-							cout << " + " << categoriaAtivaA << endl;
+							cout << " + " << arrayTa[i] << endl;
+							cout << " + " << categoryActiveA << endl;
 						}
 					}	
 				}
-				cout << "categoria a "<< categoriaAtivaA << endl;
+				cout << "category a "<< categoryActiveA << endl;
 				
 				
-				maiorValor = -1;
-				for (int i = 0; i < tamanhoMatrizBX;i++){
-					if (vetorTb[i] > maiorValor){
-						categoriaAtivaB = i;
-						maiorValor = vetorTb[i];
-						cout << " + " << vetorTa[i] << endl;
-						cout << " + " << categoriaAtivaA << endl;
+				biggestValue = -1;
+				for (int i = 0; i < sizeMatrixBX;i++){
+					if (arrayTb[i] > biggestValue){
+						categoryActiveB = i;
+						biggestValue = arrayTb[i];
+						cout << " + " << arrayTa[i] << endl;
+						cout << " + " << categoryActiveA << endl;
 					}	
 				}
 				
-				cout << "categoria b "<< categoriaAtivaB << endl;
+				cout << "category b "<< categoryActiveB << endl;
 				
-				/*Teste de vigilancia*/
+				/*Sentry test*/
 				
-				float testeVigilanciaA = 0;
-				float testeVigilanciaB = 0;
+				float testSentryA = 0;
+				float testSentryB = 0;
 				
-				float valorTesteVigilancia = 0, divisaoTesteVigilancia = 0;
-				/*para b*/
-				for (int i = 0; i < tamanhoMatrizBY*2; i++){
-					valorTesteVigilancia += pow(matrizIB[categoriaAtivaB][i],matrizWb[categoriaAtivaB][i]);
-					divisaoTesteVigilancia += matrizIB[categoriaAtivaB][i];
+				float valuetestSentry = 0, divtestSentry = 0;
+				/*for the b*/
+				for (int i = 0; i < sizeMatrixBY*2; i++){
+					valuetestSentry += pow(matrixIB[categoryActiveB][i],matrixWb[categoryActiveB][i]);
+					divtestSentry += matrixIB[categoryActiveB][i];
 				}
 				
-				valorTesteVigilancia = (valorTesteVigilancia / divisaoTesteVigilancia);
-				cout << "teste de vigilancia b " << valorTesteVigilancia << endl;
-				if (valorTesteVigilancia >= pb){
-					testeVigilanciaB = 1;
+				valuetestSentry = (valuetestSentry / divtestSentry);
+				cout << "test of Sentry b " << valuetestSentry << endl;
+				if (valuetestSentry >= pb){
+					testSentryB = 1;
 				}
 				
-				int contadorLimite = 1;
-				while (testeVigilanciaB == 0 && contadorLimite < tamanhoMatrizBX){
-					contadorLimite++;
-					vetorTb[categoriaAtivaB] = 0;
+				int limitCount = 1;
+				while (testSentryB == 0 && limitCount < sizeMatrixBX){
+					limitCount++;
+					arrayTb[categoryActiveB] = 0;
 					
-					maiorValor = -1;
-					categoriaAtivaB = -1;
-					for (int i = 0; i < tamanhoMatrizBX;i++){
-						if (vetorTb[i] > maiorValor){
-							categoriaAtivaB = i;
-							maiorValor = vetorTb[i];
+					biggestValue = -1;
+					categoryActiveB = -1;
+					for (int i = 0; i < sizeMatrixBX;i++){
+						if (arrayTb[i] > biggestValue){
+							categoryActiveB = i;
+							biggestValue = arrayTb[i];
 						}	
 					}		
 					
-					if (categoriaAtivaB >= 0){
-						/*para b*/
-						for (int i = 0; i < tamanhoMatrizBY; i++){
-							valorTesteVigilancia += pow(matrizIB[categoriaAtivaB][i],matrizWb[categoriaAtivaB][i]);
-							divisaoTesteVigilancia += matrizIB[categoriaAtivaB][i];
+					if (categoryActiveB >= 0){
+						/*for the b*/
+						for (int i = 0; i < sizeMatrixBY; i++){
+							valuetestSentry += pow(matrixIB[categoryActiveB][i],matrixWb[categoryActiveB][i]);
+							divtestSentry += matrixIB[categoryActiveB][i];
 						}
 						
-						valorTesteVigilancia = (valorTesteVigilancia / divisaoTesteVigilancia);
-						cout << "teste de vigilancia b " << valorTesteVigilancia << endl;
-						if (valorTesteVigilancia >= pb){
-							testeVigilanciaB = 1;
+						valuetestSentry = (valuetestSentry / divtestSentry);
+						cout << "test of Sentry b " << valuetestSentry << endl;
+						if (valuetestSentry >= pb){
+							testSentryB = 1;
 						}	
 					}
 						
 				}
 				
-				if (testeVigilanciaB == 0){
-					cout << "houve falha no teste de vigilancia de todas as categorias da matriz B" << endl;
+				if (testSentryB == 0){
+					cout << "sentry tests failed on the matrix:  B" << endl;
 					return 0;
 				}
 				
-				/*para a*/
-				for (int i = 0; i < tamanhoMatrizAY*2; i++){
-					valorTesteVigilancia += pow(matrizIA[categoriaAtivaA][i],matrizWa[categoriaAtivaA][i]);
-					divisaoTesteVigilancia += matrizIA[categoriaAtivaA][i];
+				/*for the a*/
+				for (int i = 0; i < sizeMatrixAY*2; i++){
+					valuetestSentry += pow(matrixIA[categoryActiveA][i],matrixWa[categoryActiveA][i]);
+					divtestSentry += matrixIA[categoryActiveA][i];
 				}
 				
-				valorTesteVigilancia = (valorTesteVigilancia / divisaoTesteVigilancia);
-				cout << "teste de vigilancia a " << valorTesteVigilancia << endl;
-				if (valorTesteVigilancia >= pa){
-					testeVigilanciaA = 1;
+				valuetestSentry = (valuetestSentry / divtestSentry);
+				cout << "test of Sentry a " << valuetestSentry << endl;
+				if (valuetestSentry >= pa){
+					testSentryA = 1;
 				}
 				
-				contadorLimite = 1;
-				while (testeVigilanciaA == 0 && contadorLimite < tamanhoMatrizAX){
-					contadorLimite++;
-					vetorTa[categoriaAtivaA] = 0;
+				limitCount = 1;
+				while (testSentryA == 0 && limitCount < sizeMatrixAX){
+					limitCount++;
+					arrayTa[categoryActiveA] = 0;
 					
-					maiorValor = -1;
-					categoriaAtivaA = -1;
-					for (int i = 0; i < tamanhoMatrizAX*2;i++){
-						if (vetorTa[i] > maiorValor){
-							categoriaAtivaA = i;
-							maiorValor = vetorTa[i];
+					biggestValue = -1;
+					categoryActiveA = -1;
+					for (int i = 0; i < sizeMatrixAX*2;i++){
+						if (arrayTa[i] > biggestValue){
+							categoryActiveA = i;
+							biggestValue = arrayTa[i];
 						}	
 					}		
 					
-					if (categoriaAtivaA >= 0){
-						/*para a*/
-						for (int i = 0; i < tamanhoMatrizAY*2; i++){
-							valorTesteVigilancia += pow(matrizIA[categoriaAtivaA][i],matrizWa[categoriaAtivaA][i]);
-							divisaoTesteVigilancia += matrizIA[categoriaAtivaA][i];
+					if (categoryActiveA >= 0){
+						/*for the a*/
+						for (int i = 0; i < sizeMatrixAY*2; i++){
+							valuetestSentry += pow(matrixIA[categoryActiveA][i],matrixWa[categoryActiveA][i]);
+							divtestSentry += matrixIA[categoryActiveA][i];
 						}
 						
-						valorTesteVigilancia = (valorTesteVigilancia / divisaoTesteVigilancia);
-						cout << "teste de vigilancia a " << valorTesteVigilancia << endl;
-						if (valorTesteVigilancia >= pa){
-							testeVigilanciaA = 1;
+						valuetestSentry = (valuetestSentry / divtestSentry);
+						cout << "test of Sentry a " << valuetestSentry << endl;
+						if (valuetestSentry >= pa){
+							testSentryA = 1;
 						}	
 					}		
 				}
 				
-				if (testeVigilanciaA == 0){
-					cout << "houve falha no teste de vigilancia de todas as categorias da matriz A" << endl;
+				if (testSentryA == 0){
+					cout << "sentry tests failed on the matrix:  A" << endl;
 					return 0;
 				}
 				
 				/*match tracking*/	
-				float matrizYA[tamanhoMatrizBX][tamanhoMatrizAY];
-				float matrizYB[tamanhoMatrizBX][tamanhoMatrizAY];
+				float matrixYA[sizeMatrixBX][sizeMatrixAY];
+				float matrixYB[sizeMatrixBX][sizeMatrixAY];
 				
-				for (int i = 0; i < tamanhoMatrizBX; i++){
-					for (int j = 0; j < tamanhoMatrizAY; j++){
-						matrizYA[i][j] = 0;
-						matrizYB[i][j] = 0;
+				for (int i = 0; i < sizeMatrixBX; i++){
+					for (int j = 0; j < sizeMatrixAY; j++){
+						matrixYA[i][j] = 0;
+						matrixYB[i][j] = 0;
 					}
 				}
 				
-				matrizYA[0][categoriaAtivaA] = 1;
-				matrizYB[0][categoriaAtivaB] = 1;
+				matrixYA[0][categoryActiveA] = 1;
+				matrixYB[0][categoryActiveB] = 1;
 				
-				float valorMatchTracking = 0, divisaoMatchTracking = 0;
-				for (int i = 0; i < tamanhoMatrizAY; i++){
-					valorMatchTracking += pow(matrizYA[0][categoriaAtivaA],matrizWab[categoriaAtivaA][i]);
-					divisaoMatchTracking += matrizYA[0][categoriaAtivaA];
+				float valueMatchTracking = 0, divMatchTracking = 0;
+				for (int i = 0; i < sizeMatrixAY; i++){
+					valueMatchTracking += pow(matrixYA[0][categoryActiveA],matrixWab[categoryActiveA][i]);
+					divMatchTracking += matrixYA[0][categoryActiveA];
 				}
 				
-				valorMatchTracking = (valorMatchTracking / divisaoMatchTracking);
+				valueMatchTracking = (valueMatchTracking / divMatchTracking);
 				
-				/*loop de match tracking - IMPORTANTE*/
-				contadorLimite = 1;
-				while (testeVigilanciaA == 0 && contadorLimite < (tamanhoMatrizBX*tamanhoMatrizAX)){
-					contadorLimite++;
+				/*loop of match tracking - IMPORTANT*/
+				limitCount = 1;
+				while (testSentryA == 0 && limitCount < (sizeMatrixBX*sizeMatrixAX)){
+					limitCount++;
 					
-					/*determinando o vt e fazendo mais uma vez o teste de vigilancia*/
-					for (int x = 0; x < tamanhoMatrizBX; x++){
-						for (int y = 0; y < tamanhoMatrizAX; y++){
-							/*para A*/	
+					/*verify if VT needs to make once again the test of Sentry*/
+					for (int x = 0; x < sizeMatrixBX; x++){
+						for (int y = 0; y < sizeMatrixAX; y++){
+							/*for the A*/	
 							/*art a*/
-							cout << "calculando T de A " << endl;
-							for (int i = 0; i < tamanhoMatrizAX;i++){
-								float somatorioLinha = 0;
-								float somatorioLinhaW = 0;
-								for (int j = 0; j < tamanhoMatrizAY*2;j++){
-									//somatorioLinha += (pow(matrizIA[i][j], matrizWa[i][j]));
-									int menorValorAtual = 0;
-									int vetorUso[2] = {matrizIA[i][j],matrizWa[i][j]};
-									verificaMenorValorVetor(vetorUso,2,menorValorAtual);
-									somatorioLinha +=  menorValorAtual;
-									somatorioLinhaW += matrizWa[i][j]; 
+							cout << "calculating T of A " << endl;
+							for (int i = 0; i < sizeMatrixAX;i++){
+								float lineSum = 0;
+								float lineSumW = 0;
+								for (int j = 0; j < sizeMatrixAY*2;j++){
+									int lowerCurrentValue = 0;
+									int arrayLowerValue[2] = {matrixIA[i][j],matrixWa[i][j]};
+									verifyTheLowerValueArray(arrayLowerValue,2,lowerCurrentValue);
+									lineSum +=  lowerCurrentValue;
+									lineSumW += matrixWa[i][j]; 
 								}
-								vetorTa[i] = somatorioLinha / (alpha + somatorioLinhaW);
-								cout << "t " << i << " " << vetorTa[i] << endl;
+								arrayTa[i] = lineSum / (alpha + lineSumW);
+								cout << "t " << i << " " << arrayTa[i] << endl;
 							
 							}	
 							
-							maiorValor = -1;
-							for (int i = 0; i < tamanhoMatrizAX;i++){
-								if (vetorTa[i] > maiorValor){
-									cout << " vetorTa " << vetorTa[i] << endl;
-									cout << " maiorValor " << maiorValor << endl;
+							biggestValue = -1;
+							for (int i = 0; i < sizeMatrixAX;i++){
+								if (arrayTa[i] > biggestValue){
+									cout << " arrayTa " << arrayTa[i] << endl;
+									cout << " biggestValue " << biggestValue << endl;
 									
-									if (vetorTa[i] > (maiorValor+0.001)){
-										maiorValor = vetorTa[i];
-										categoriaAtivaA = i;
+									if (arrayTa[i] > (biggestValue+0.001)){
+										biggestValue = arrayTa[i];
+										categoryActiveA = i;
 										
-										cout << " + " << vetorTa[i] << endl;
-										cout << " + " << categoriaAtivaA << endl;
+										cout << " + " << arrayTa[i] << endl;
+										cout << " + " << categoryActiveA << endl;
 									}
 								}	
 							}
-							cout << "categoria a "<< categoriaAtivaA << endl;
+							cout << "category a "<< categoryActiveA << endl;
 							
-							int contadorLimiteA = 1;
-							while (testeVigilanciaA == 0 && contadorLimiteA < tamanhoMatrizAX){
-								contadorLimiteA++;
-								vetorTa[categoriaAtivaA] = 0;
+							int limitCountA = 1;
+							while (testSentryA == 0 && limitCountA < sizeMatrixAX){
+								limitCountA++;
+								arrayTa[categoryActiveA] = 0;
 								
-								maiorValor = -1;
-								categoriaAtivaA = -1;
-								for (int i = 0; i < tamanhoMatrizAX*2;i++){
-									if (vetorTa[i] > maiorValor){
-										categoriaAtivaA = i;
-										maiorValor = vetorTa[i];
+								biggestValue = -1;
+								categoryActiveA = -1;
+								for (int i = 0; i < sizeMatrixAX*2;i++){
+									if (arrayTa[i] > biggestValue){
+										categoryActiveA = i;
+										biggestValue = arrayTa[i];
 									}	
 								}		
 								
-								if (categoriaAtivaA >= 0){
-									/*para a*/
-									for (int i = 0; i < tamanhoMatrizAY*2; i++){
-										valorTesteVigilancia += pow(matrizIA[categoriaAtivaA][i],matrizWa[categoriaAtivaA][i]);
-										divisaoTesteVigilancia += matrizIA[categoriaAtivaA][i];
+								if (categoryActiveA >= 0){
+									/*for the a*/
+									for (int i = 0; i < sizeMatrixAY*2; i++){
+										valuetestSentry += pow(matrixIA[categoryActiveA][i],matrixWa[categoryActiveA][i]);
+										divtestSentry += matrixIA[categoryActiveA][i];
 									}
 									
-									valorTesteVigilancia = (valorTesteVigilancia / divisaoTesteVigilancia);
-									cout << "teste de vigilancia a " << valorTesteVigilancia << endl;
-									if (valorTesteVigilancia >= pa){
-										testeVigilanciaA = 1;
+									valuetestSentry = (valuetestSentry / divtestSentry);
+									cout << "test of Sentry a " << valuetestSentry << endl;
+									if (valuetestSentry >= pa){
+										testSentryA = 1;
 									}	
 								}		
 							}
 							
-							if (testeVigilanciaA == 0){
-								cout << "houve falha no teste de vigilancia de todas as categorias da matriz A" << endl;
+							if (testSentryA == 0){
+								cout << "sentry tests failed on the matrix:  A" << endl;
 								return 0;
 							}	
 							
-							for (int i = 0; i < tamanhoMatrizBX; i++){
-								for (int j = 0; j < tamanhoMatrizAY; j++){
-										matrizYA[i][j] = 0;
-										matrizYB[i][j] = 0;
+							for (int i = 0; i < sizeMatrixBX; i++){
+								for (int j = 0; j < sizeMatrixAY; j++){
+										matrixYA[i][j] = 0;
+										matrixYB[i][j] = 0;
 									}
 								}
 								
-							matrizYA[0][categoriaAtivaA] = 1;
-							matrizYB[0][categoriaAtivaB] = 1;
+							matrixYA[0][categoryActiveA] = 1;
+							matrixYB[0][categoryActiveB] = 1;
 								
-							valorMatchTracking = 0, divisaoMatchTracking = 0;
-							for (int i = 0; i < tamanhoMatrizAY; i++){
-								valorMatchTracking += pow(matrizYA[0][categoriaAtivaA],matrizWab[categoriaAtivaA][i]);
-								divisaoMatchTracking += matrizYA[0][categoriaAtivaA];
+							valueMatchTracking = 0, divMatchTracking = 0;
+							for (int i = 0; i < sizeMatrixAY; i++){
+								valueMatchTracking += pow(matrixYA[0][categoryActiveA],matrixWab[categoryActiveA][i]);
+								divMatchTracking += matrixYA[0][categoryActiveA];
 							}
 								
-							valorMatchTracking = (valorMatchTracking / divisaoMatchTracking);
+							valueMatchTracking = (valueMatchTracking / divMatchTracking);
 							
-							if (valorMatchTracking < pba){
+							if (valueMatchTracking < pba){
 								cout << "match tracking invalido " << endl;
 								return 0;
 							}
 						}
 						
-						/*para B*/
+						/*for the B*/
 						/*art b*/	
-						cout << "calculando T de B " << endl;
-						for (int i = 0; i < tamanhoMatrizBX;i++){
-							float somatorioLinha = 0;
-							float somatorioLinhaW = 0;
-							for (int j = 0; j < tamanhoMatrizBY*2;j++){
-							//	somatorioLinha += (pow(matrizIB[i][j], matrizWb[i][j]));
-								int menorValorAtual = 0;
-								int vetorUso[2] = {matrizIB[i][j],matrizWb[i][j]};
-								verificaMenorValorVetor(vetorUso,2,menorValorAtual);
-								somatorioLinha +=  menorValorAtual;
-								somatorioLinhaW += matrizWb[i][j]; 
+						cout << "calculating T of B " << endl;
+						for (int i = 0; i < sizeMatrixBX;i++){
+							float lineSum = 0;
+							float lineSumW = 0;
+							for (int j = 0; j < sizeMatrixBY*2;j++){
+								int lowerCurrentValue = 0;
+								int arrayLowerValue[2] = {matrixIB[i][j],matrixWb[i][j]};
+								verifyTheLowerValueArray(arrayLowerValue,2,lowerCurrentValue);
+								lineSum +=  lowerCurrentValue;
+								lineSumW += matrixWb[i][j]; 
 							}
-							vetorTb[i] = somatorioLinha / (alpha + somatorioLinhaW);
-							cout << "t " << i << " " << vetorTb[i] << endl;
+							arrayTb[i] = lineSum / (alpha + lineSumW);
+							cout << "t " << i << " " << arrayTb[i] << endl;
 						}
 						
-						maiorValor = -1;
-						for (int i = 0; i < tamanhoMatrizBX;i++){
-							if (vetorTb[i] > maiorValor){
-								categoriaAtivaB = i;
-								maiorValor = vetorTb[i];
-								cout << " + " << vetorTa[i] << endl;
-								cout << " + " << categoriaAtivaA << endl;
+						biggestValue = -1;
+						for (int i = 0; i < sizeMatrixBX;i++){
+							if (arrayTb[i] > biggestValue){
+								categoryActiveB = i;
+								biggestValue = arrayTb[i];
+								cout << " + " << arrayTa[i] << endl;
+								cout << " + " << categoryActiveA << endl;
 							}	
 						}
 						
-						cout << "categoria b "<< categoriaAtivaB << endl;
+						cout << "category b "<< categoryActiveB << endl;
 							
-						int contadorLimiteB = 1;
-						while (testeVigilanciaB == 0 && contadorLimiteB < tamanhoMatrizBX){
-							contadorLimiteB++;
-							vetorTb[categoriaAtivaB] = 0;
+						int limitCountB = 1;
+						while (testSentryB == 0 && limitCountB < sizeMatrixBX){
+							limitCountB++;
+							arrayTb[categoryActiveB] = 0;
 							
-							maiorValor = -1;
-							categoriaAtivaB = -1;
-							for (int i = 0; i < tamanhoMatrizBX;i++){
-								if (vetorTb[i] > maiorValor){
-									categoriaAtivaB = i;
-									maiorValor = vetorTb[i];
+							biggestValue = -1;
+							categoryActiveB = -1;
+							for (int i = 0; i < sizeMatrixBX;i++){
+								if (arrayTb[i] > biggestValue){
+									categoryActiveB = i;
+									biggestValue = arrayTb[i];
 								}	
 							}		
 							
-							if (categoriaAtivaB >= 0){
-								/*para b*/
-								for (int i = 0; i < tamanhoMatrizBY; i++){
-									valorTesteVigilancia += pow(matrizIB[categoriaAtivaB][i],matrizWb[categoriaAtivaB][i]);
-									divisaoTesteVigilancia += matrizIB[categoriaAtivaB][i];
+							if (categoryActiveB >= 0){
+								/*for the b*/
+								for (int i = 0; i < sizeMatrixBY; i++){
+									valuetestSentry += pow(matrixIB[categoryActiveB][i],matrixWb[categoryActiveB][i]);
+									divtestSentry += matrixIB[categoryActiveB][i];
 								}
 								
-								valorTesteVigilancia = (valorTesteVigilancia / divisaoTesteVigilancia);
-								cout << "teste de vigilancia b " << valorTesteVigilancia << endl;
-								if (valorTesteVigilancia >= pb){
-									testeVigilanciaB = 1;
+								valuetestSentry = (valuetestSentry / divtestSentry);
+								cout << "test of Sentry b " << valuetestSentry << endl;
+								if (valuetestSentry >= pb){
+									testSentryB = 1;
 								}	
 							}			
 						}
 						
-						if (testeVigilanciaB == 0){
-							cout << "houve falha no teste de vigilancia de todas as categorias da matriz B" << endl;
+						if (testSentryB == 0){
+							cout << "sentry tests failed on the matrix:  B" << endl;
 							return 0;
 						}
 					
 					}
 				}
 				
-				/*atualizacao dos pesos*/
+				/*weight update*/
 				
-				float vetorAtualizacaoPesosA1[tamanhoMatrizAY*2];
-				float vetorAtualizacaoPesosA2[tamanhoMatrizAY*2];
+				float arrayweightUpdateA1[sizeMatrixAY*2];
+				float arrayweightUpdateA2[sizeMatrixAY*2];
 				
-				float vetorAtualizacaoPesosB1[tamanhoMatrizBY*2];
-				float vetorAtualizacaoPesosB2[tamanhoMatrizBY*2];
+				float arrayweightUpdateB1[sizeMatrixBY*2];
+				float arrayweightUpdateB2[sizeMatrixBY*2];
 				
-				for (int i = 0; i < tamanhoMatrizAY*2; i++){
-					vetorAtualizacaoPesosA1[i] =  beta * (pow(matrizIA[categoriaAtivaA][i],matrizWa[categoriaAtivaA][i]));
-					vetorAtualizacaoPesosA2[i] =  (1 - beta) * (matrizWa[categoriaAtivaA][i]);		
-					vetorAtualizacaoPesosA1[i] += vetorAtualizacaoPesosA2[i]; 
-					matrizWa[categoriaAtivaA][i] = vetorAtualizacaoPesosA1[i];
+				for (int i = 0; i < sizeMatrixAY*2; i++){
+					arrayweightUpdateA1[i] =  beta * (pow(matrixIA[categoryActiveA][i],matrixWa[categoryActiveA][i]));
+					arrayweightUpdateA2[i] =  (1 - beta) * (matrixWa[categoryActiveA][i]);		
+					arrayweightUpdateA1[i] += arrayweightUpdateA2[i]; 
+					matrixWa[categoryActiveA][i] = arrayweightUpdateA1[i];
 				}
 				
-				for (int i = 0; i < tamanhoMatrizBY*2; i++){
-					vetorAtualizacaoPesosB1[i] =  beta * (pow(matrizIB[categoriaAtivaB][i],matrizWb[categoriaAtivaB][i]));
-					vetorAtualizacaoPesosB2[i] =  (1 - beta) * (matrizWb[categoriaAtivaB][i]);		
-					vetorAtualizacaoPesosB1[i] += vetorAtualizacaoPesosB2[i]; 
-					matrizWb[categoriaAtivaB][i] = vetorAtualizacaoPesosB1[i];
+				for (int i = 0; i < sizeMatrixBY*2; i++){
+					arrayweightUpdateB1[i] =  beta * (pow(matrixIB[categoryActiveB][i],matrixWb[categoryActiveB][i]));
+					arrayweightUpdateB2[i] =  (1 - beta) * (matrixWb[categoryActiveB][i]);		
+					arrayweightUpdateB1[i] += arrayweightUpdateB2[i]; 
+					matrixWb[categoryActiveB][i] = arrayweightUpdateB1[i];
 				}
 				
-				float vetorAtualizacaoPesosAB[tamanhoMatrizAY];
-				for (int i = 0; i < tamanhoMatrizAY; i++){
-					vetorAtualizacaoPesosAB[i] = 0;
+				float arrayweightUpdateAB[sizeMatrixAY];
+				for (int i = 0; i < sizeMatrixAY; i++){
+					arrayweightUpdateAB[i] = 0;
 				}
-				cout << "categoria a " << categoriaAtivaA << endl; 
-				vetorAtualizacaoPesosAB[categoriaAtivaA] = 1;
+				cout << "category a " << categoryActiveA << endl; 
+				arrayweightUpdateAB[categoryActiveA] = 1;
 				
-				for (int i = 0; i < tamanhoMatrizAY; i++){
-					matrizWab[categoriaAtivaB][i] = vetorAtualizacaoPesosAB[i];
+				for (int i = 0; i < sizeMatrixAY; i++){
+					matrixWab[categoryActiveB][i] = arrayweightUpdateAB[i];
 				}
 					
-				cout << "Impressao de pesos " << endl;
+				cout << "PRINTING THE WEIGHTS " << endl;
 				cout << "Wa " << endl;
-				for (int i = 0;i < tamanhoMatrizAX;i++){
-					for (int j = 0; j < tamanhoMatrizAY*2;j++){
-						cout << matrizWa[i][j] << " ";
+				for (int i = 0;i < sizeMatrixAX;i++){
+					for (int j = 0; j < sizeMatrixAY*2;j++){
+						cout << matrixWa[i][j] << " ";
 					}
 					cout << endl;
 				}
 				cout << "Wb " << endl;
-				for (int i = 0;i < tamanhoMatrizBX;i++){
-					for (int j = 0; j < tamanhoMatrizBY*2;j++){
-						cout << matrizWb[i][j] << " ";
+				for (int i = 0;i < sizeMatrixBX;i++){
+					for (int j = 0; j < sizeMatrixBY*2;j++){
+						cout << matrixWb[i][j] << " ";
 					}
 					cout << endl;
 				}
 				cout << "Wab " << endl;
-				for (int i = 0;i < tamanhoMatrizBX;i++){
-					for (int j = 0; j < tamanhoMatrizAY;j++){
-						cout << matrizWab[i][j] << " ";
+				for (int i = 0;i < sizeMatrixBX;i++){
+					for (int j = 0; j < sizeMatrixAY;j++){
+						cout << matrixWab[i][j] << " ";
 					}
 					cout << endl;
 				}
 				
-				/*COMPARACAO DE VALORES - EH AQUI QUE O SISTEMA FAZ O RECONHECIMENTO*/
-				int diferenca = 0;
-				for (int i = 0; i < tamanhoMatrizAXReconhecimento; i++){
-					for (int j = 0; j < tamanhoMatrizAYReconhecimento; j++){
-						if (matrizReconhecimentoWa[i][j] != matrizWa[i][j])	{
-							diferenca = 1;
+				/*recogntion mode*/
+				int diference = 0;
+				for (int i = 0; i < sizeMatrixAXRecogntion; i++){
+					for (int j = 0; j < sizeMatrixAYRecogntion; j++){
+						if (matrixRecogntionWa[i][j] != matrixWa[i][j])	{
+							diference = 1;
 							break;
 						}
 					}
 				}
 				
-				for (int i = 0; i < tamanhoMatrizBXReconhecimento; i++){
-					for (int j = 0; j < tamanhoMatrizBYReconhecimento; j++){
-						if (matrizReconhecimentoWb[i][j] != matrizWb[i][j])	{
-							diferenca = 1;
+				for (int i = 0; i < sizeMatrixBXRecogntion; i++){
+					for (int j = 0; j < sizeMatrixBYRecogntion; j++){
+						if (matrixRecogntionWb[i][j] != matrixWb[i][j])	{
+							diference = 1;
 							break;
 						}
 					}
 				}
 				
-				for (int i = 0; i < tamanhoMatrizBXReconhecimento; i++){
-					for (int j = 0; j < tamanhoMatrizAYReconhecimento; j++){
-						if (matrizReconhecimentoWb[i][j] != matrizWb[i][j])	{
-							diferenca = 1;
+				for (int i = 0; i < sizeMatrixBXRecogntion; i++){
+					for (int j = 0; j < sizeMatrixAYRecogntion; j++){
+						if (matrixRecogntionWb[i][j] != matrixWb[i][j])	{
+							diference = 1;
 							break;
 						}	
 					}
 				}
 				
 				cout << "////////////////////////////////////////////////////////////" << endl;
-				if (diferenca == 1){
-					cout << "O SISTEMA NAO RECONHECEU AS ENTRADAS COMO UM PADRAO VALIDO ! " << endl;
+				if (diference == 1){
+					cout << "THAT IS A VALID STANDARD ! " << endl;
 				} else {
-					cout << "AS ENTRADAS FORAM RECONHECIDAS COMO UM PADRAO VALIDO ! " << endl;	
+					cout << "THAT STANDARD IS NOT A VALID FOR MATCHING ! " << endl;	
 				}	
 				cout << "////////////////////////////////////////////////////////////" << endl;
-				cout << "PRESSIONE UMA TECLA PARA VOLTAR AO MENU PRINCIPAL!" << endl;
+				cout << "PRESS A KEY FOR BACK TO MAIN MENU!" << endl;
 				system("pause");							
 				break;
 			}
 			case 6: {
-				cout << "INSIRA O VALOR DE ITERACOES (ATUAL: "<< iteracoes <<"): ";
-				cin >> iteracoes;
-				cout << "ITERACAO EDITADA! PRESSIONE UMA TECLA PARA VOLTAR AO MENU PRINCIPAL!" << endl;
+				cout << "INSERT THE VALUE OF THE iteractions (CURRENT: "<< iteractions <<"): ";
+				cin >> iteractions;
+				cout << "ITERACTION VALUE SAVED! PRESS A KEY FOR BACK TO MAIN MENU!" << endl;
 				system("pause");	
 				break;
 			}
 			case 5: {
 				cout << "////////////////////////////////////////////////////////////" << endl;
-				cout << "MATRIZ A" << endl;
-				for (int i = 0;i < tamanhoMatrizAX;i++){
-					for (int j = 0; j < tamanhoMatrizAY;j++){	
-						cout << matrizInicialA[i][j] << " ";
+				cout << "matrix A" << endl;
+				for (int i = 0;i < sizeMatrixAX;i++){
+					for (int j = 0; j < sizeMatrixAY;j++){	
+						cout << matrixInitialA[i][j] << " ";
 					}
 					cout << endl;	
 				}
 				cout << "////////////////////////////////////////////////////////////" << endl;
-				cout << "MATRIZ B" << endl;
-				for (int i = 0;i < tamanhoMatrizBX;i++){
-					for (int j = 0; j < tamanhoMatrizBY;j++){	
-						cout << matrizInicialB[i][j] << " ";
+				cout << "matrix B" << endl;
+				for (int i = 0;i < sizeMatrixBX;i++){
+					for (int j = 0; j < sizeMatrixBY;j++){	
+						cout << matrixInitialB[i][j] << " ";
 					}
 					cout << endl;	
 				}
 				cout << "////////////////////////////////////////////////////////////" << endl;
-				cout << "MATRIZ WA" << endl;
-				for (int i = 0;i < tamanhoMatrizAX;i++){
-					for (int j = 0; j < tamanhoMatrizAY*2;j++){	
-						cout << matrizInicialWa[i][j] << " ";
+				cout << "matrix WA" << endl;
+				for (int i = 0;i < sizeMatrixAX;i++){
+					for (int j = 0; j < sizeMatrixAY*2;j++){	
+						cout << matrixInitialWa[i][j] << " ";
 					}
 					cout << endl;	
 				}
 				cout << "////////////////////////////////////////////////////////////" << endl;
-				cout << "MATRIZ WB" << endl;
-				for (int i = 0;i < tamanhoMatrizBX;i++){
-					for (int j = 0; j < tamanhoMatrizBY*2;j++){	
-						cout << matrizInicialWb[i][j] << " ";
+				cout << "matrix WB" << endl;
+				for (int i = 0;i < sizeMatrixBX;i++){
+					for (int j = 0; j < sizeMatrixBY*2;j++){	
+						cout << matrixInitialWb[i][j] << " ";
 					}
 					cout << endl;	
 				}
 				cout << "////////////////////////////////////////////////////////////" << endl;
-				cout << "MATRIZ WAB" << endl;
-				for (int i = 0;i < tamanhoMatrizAX;i++){
-					for (int j = 0; j < tamanhoMatrizBX;j++){	
-						cout << matrizInicialWab[i][j] << " ";
+				cout << "matrix WAB" << endl;
+				for (int i = 0;i < sizeMatrixAX;i++){
+					for (int j = 0; j < sizeMatrixBX;j++){	
+						cout << matrixInitialWab[i][j] << " ";
 					}
 					cout << endl;	
 				}
 				
 				cout << "////////////////////////////////////////////////////////////" << endl;
-				cout << "RECONHECIMENTO: MATRIZ WA" << endl;
-				for (int i = 0; i < tamanhoMatrizAXReconhecimento; i++){
-					for (int j = 0; j < tamanhoMatrizAYReconhecimento; j++){
-						cout << matrizReconhecimentoWa[i][j] << " ";		
+				cout << "Recogntion: matrix WA" << endl;
+				for (int i = 0; i < sizeMatrixAXRecogntion; i++){
+					for (int j = 0; j < sizeMatrixAYRecogntion; j++){
+						cout << matrixRecogntionWa[i][j] << " ";		
 					}
 					cout << endl;
 				}
 				
 				cout << "////////////////////////////////////////////////////////////" << endl;
-				cout << "RECONHECIMENTO: MATRIZ WB" << endl;
-				for (int i = 0; i < tamanhoMatrizBXReconhecimento; i++){
-					for (int j = 0; j < tamanhoMatrizBYReconhecimento; j++){
-						cout << matrizReconhecimentoWb[i][j] << " ";	
+				cout << "Recogntion: matrix WB" << endl;
+				for (int i = 0; i < sizeMatrixBXRecogntion; i++){
+					for (int j = 0; j < sizeMatrixBYRecogntion; j++){
+						cout << matrixRecogntionWb[i][j] << " ";	
 					}
 					cout << endl;
 				}
 				
 				cout << "////////////////////////////////////////////////////////////" << endl;
-				cout << "RECONHECIMENTO: MATRIZ WAB" << endl;
-				for (int i = 0; i < tamanhoMatrizAXReconhecimento; i++){
-					for (int j = 0; j < tamanhoMatrizBXReconhecimento; j++){
-						cout << matrizReconhecimentoWab[i][j] << " ";	
+				cout << "Recogntion: matrix WAB" << endl;
+				for (int i = 0; i < sizeMatrixAXRecogntion; i++){
+					for (int j = 0; j < sizeMatrixBXRecogntion; j++){
+						cout << matrixRecogntionWab[i][j] << " ";	
 					}
 					cout << endl;
 				}
 				
 				cout << "////////////////////////////////////////////////////////////" << endl;
-				cout << "PRESSIONE UMA TECLA PARA VOLTAR AO MENU PRINCIPAL!" << endl;
+				cout << "PRESS A KEY FOR BACK TO MAIN MENU!" << endl;
 				system("pause");
 				break;
 			}
 			case 4:{				
 				cout << "////////////////////////////////////////////////////////////" << endl;
-				for (int i = 0;i < tamanhoMatrizAX;i++){
-					for (int j = 0; j < tamanhoMatrizAY*2;j++){
-						cout << "INSIRA O VALOR DA MATRIZ WA [ " << i <<" ] [ "<< j <<" ] (ATUAL: "<< matrizInicialWa[i][j] << "): ";
-						cin >> matrizInicialWa[i][j];
+				for (int i = 0;i < sizeMatrixAX;i++){
+					for (int j = 0; j < sizeMatrixAY*2;j++){
+						cout << "INSERT THE VALUE OF THE MATRIX WA [ " << i <<" ] [ "<< j <<" ] (CURRENT: "<< matrixInitialWa[i][j] << "): ";
+						cin >> matrixInitialWa[i][j];
 					}
 				}
 				
-				for (int i = 0;i < tamanhoMatrizBX;i++){
-					for (int j = 0; j < tamanhoMatrizBY*2;j++){
-						cout << "INSIRA O VALOR DA MATRIZ WB [ " << i <<" ] [ "<< j <<" ] (ATUAL: "<< matrizInicialWb[i][j] << "): ";
-						cin >> matrizInicialWb[i][j];
+				for (int i = 0;i < sizeMatrixBX;i++){
+					for (int j = 0; j < sizeMatrixBY*2;j++){
+						cout << "INSERT THE VALUE OF THE MATRIX WB [ " << i <<" ] [ "<< j <<" ] (CURRENT: "<< matrixInitialWb[i][j] << "): ";
+						cin >> matrixInitialWb[i][j];
 					}
 				}
 				
-				for (int i = 0;i < tamanhoMatrizBX;i++){
-					for (int j = 0; j < tamanhoMatrizAY;j++){
-						cout << "INSIRA O VALOR DA MATRIZ WAB [ " << i <<" ] [ "<< j <<" ] (ATUAL: "<< matrizInicialWab[i][j] << "): ";
-						cin >> matrizInicialWab[i][j];
+				for (int i = 0;i < sizeMatrixBX;i++){
+					for (int j = 0; j < sizeMatrixAY;j++){
+						cout << "INSERT THE VALUE OF THE MATRIX WAB [ " << i <<" ] [ "<< j <<" ] (CURRENT: "<< matrixInitialWab[i][j] << "): ";
+						cin >> matrixInitialWab[i][j];
 					}
 				}
 				
-				cout << "MATRIZES DE PESO EDITADAS! PRESSIONE UMA TECLA PARA VOLTAR AO MENU PRINCIPAL!" << endl;
+				cout << "WEIGHT MATRIX VALUES SAVED! PRESS A KEY FOR BACK TO MAIN MENU!" << endl;
 				system("pause");
 				break;
 			}
 			
 			case 3:{
 				cout << "////////////////////////////////////////////////////////////" << endl;
-				cout << "INSIRA O NUMERO DE LINHAS DA MATRIZ A (ATUAL: "<< tamanhoMatrizAX <<"): ";
-				cin >> tamanhoMatrizAX;
-				cout << "INSIRA O NUMERO DE COLUNAS DA MATRIZ A (ATUAL: "<< tamanhoMatrizAY <<"): ";
-				cin >> tamanhoMatrizAY;
-				cout << "INSIRA O NUMERO DE LINHAS DA MATRIZ B (ATUAL: "<< tamanhoMatrizBX <<"): ";
-				cin >> tamanhoMatrizBX;
-				cout << "INSIRA O NUMERO DE COLUNAS DA MATRIZ B (ATUAL: " << tamanhoMatrizBY <<"): ";
-				cin >> tamanhoMatrizBY;
+				cout << "INSERT THE TOTAL OF LINES OF THE MATRIX A (CURRENT: "<< sizeMatrixAX <<"): ";
+				cin >> sizeMatrixAX;
+				cout << "INSERT THE TOTAL OF COLUMNS OF THE MATRIX A (CURRENT: "<< sizeMatrixAY <<"): ";
+				cin >> sizeMatrixAY;
+				cout << "INSERT THE TOTAL OF LINES OF THE MATRIX B (CURRENT: "<< sizeMatrixBX <<"): ";
+				cin >> sizeMatrixBX;
+				cout << "INSERT THE TOTAL OF COLUMNS OF THE MATRIX B (CURRENT: " << sizeMatrixBY <<"): ";
+				cin >> sizeMatrixBY;
 				
 				cout << endl << endl;
-				cout << "TAMANHOS DE MATRIZES REDEFINIDOS! PRESSIONE UMA TECLA PARA COMECAR A PREENCHER OS VALORES DAS MATRIZES " << endl;
+				cout << "WEIGHT OF THE MATRIX SAVED! PRESS A KEY TO BEGIN EDIT THE VALUE OF THE MATRIX " << endl;
 				system("pause");
 				system("cls");
 				
-				for (int i = 0;i < tamanhoMatrizAX;i++){
-					for (int j = 0; j < tamanhoMatrizAY;j++){
-						cout << "INSIRA O VALOR DA MATRIZ A [ " << i <<" ] [ "<< j <<" ] (ATUAL: "<< matrizInicialA[i][j] << "): ";
-						cin >> matrizInicialA[i][j];
+				for (int i = 0;i < sizeMatrixAX;i++){
+					for (int j = 0; j < sizeMatrixAY;j++){
+						cout << "INSERT THE VALUE OF THE MATRIX A [ " << i <<" ] [ "<< j <<" ] (CURRENT: "<< matrixInitialA[i][j] << "): ";
+						cin >> matrixInitialA[i][j];
 					}
 				}
 				
-				for (int i = 0;i < tamanhoMatrizBX;i++){
-					for (int j = 0; j < tamanhoMatrizBY;j++){
-						cout << "INSIRA O VALOR DA MATRIZ B [ " << i <<" ] [ "<< j <<" ] (ATUAL: "<< matrizInicialB[i][j] << "): ";
-						cin >> matrizInicialB[i][j];
+				for (int i = 0;i < sizeMatrixBX;i++){
+					for (int j = 0; j < sizeMatrixBY;j++){
+						cout << "INSERT THE VALUE OF THE MATRIX B [ " << i <<" ] [ "<< j <<" ] (CURRENT: "<< matrixInitialB[i][j] << "): ";
+						cin >> matrixInitialB[i][j];
 					}
 				}
 				
-				cout << "MATRIZES EDITADAS! PRESSIONE UMA TECLA PARA VOLTAR AO MENU PRINCIPAL!" << endl;
+				cout << "MATRIX VALUES SAVED! PRESS A KEY FOR BACK TO MAIN MENU!" << endl;
 				system("pause");
 				break;
 			}
 			
 			case 2:{
 				cout << "////////////////////////////////////////////////////////////" << endl;
-				cout << "INSIRA O VALOR DE ROH DE A (ATUAL: "<< pa <<"): ";
+				cout << "INSERT THE VALUE OF THE ROH of A (CURRENT: "<< pa <<"): ";
 				cin >> pa;
-				cout << "INSIRA O VALOR DE ROH DE B (ATUAL: "<< pb <<"): ";
+				cout << "INSERT THE VALUE OF THE ROH of B (CURRENT: "<< pb <<"): ";
 				cin >> pb;
-				cout << "INSIRA O VALOR DE ROH DE BA (ATUAL: "<< pba <<"): ";
+				cout << "INSERT THE VALUE OF THE ROH of BA (CURRENT: "<< pba <<"): ";
 				cin >> pba;
-				cout << "INSIRA O VALOR DE ALPHA (ATUAL: "<< alpha <<"): ";
+				cout << "INSERT THE VALUE OF THE ALPHA (CURRENT: "<< alpha <<"): ";
 				cin >> alpha;
-				cout << "INSIRA O VALOR DE BETA (ATUAL: "<< beta <<"): ";
+				cout << "INSERT THE VALUE OF THE BETA (CURRENT: "<< beta <<"): ";
 				cin >> beta;
-				cout << "VALORES EDITADOS! PRESSIONE UMA TECLA PARA VOLTAR AO MENU PRINCIPAL!" << endl;
+				cout << "VALUES SAVED! PRESS A KEY FOR BACK TO MAIN MENU!" << endl;
 				system("pause");
 				break;
 			}
 			
 			case 1:{
 				cout << "////////////////////////////////////////////////////////////" << endl;
-				float matrizA[tamanhoMatrizAX][tamanhoMatrizAY];
-				float matrizB[tamanhoMatrizBX][tamanhoMatrizBY];
+				float matrixA[sizeMatrixAX][sizeMatrixAY];
+				float matrixB[sizeMatrixBX][sizeMatrixBY];
 				
-				for (int i = 0;i < tamanhoMatrizAX;i++){
-					for (int j = 0; j < tamanhoMatrizAY;j++){
-						matrizA[i][j] = matrizInicialA[i][j];
+				for (int i = 0;i < sizeMatrixAX;i++){
+					for (int j = 0; j < sizeMatrixAY;j++){
+						matrixA[i][j] = matrixInitialA[i][j];
 					}
 				}
 				
-				for (int i = 0;i < tamanhoMatrizBX;i++){
-					for (int j = 0; j < tamanhoMatrizBY;j++){
-						matrizB[i][j] = matrizInicialB[i][j];
+				for (int i = 0;i < sizeMatrixBX;i++){
+					for (int j = 0; j < sizeMatrixBY;j++){
+						matrixB[i][j] = matrixInitialB[i][j];
 					}
 				}
 							
-				float matrizWa[tamanhoMatrizAX][tamanhoMatrizAY*2];
-				float matrizWb[tamanhoMatrizBX][tamanhoMatrizBY*2];	
-				float matrizWab[tamanhoMatrizBX][tamanhoMatrizAY];
+				float matrixWa[sizeMatrixAX][sizeMatrixAY*2];
+				float matrixWb[sizeMatrixBX][sizeMatrixBY*2];	
+				float matrixWab[sizeMatrixBX][sizeMatrixAY];
 				
-				for (int i = 0;i < tamanhoMatrizAX;i++){
-					for (int j = 0; j < tamanhoMatrizAY*2;j++){
-						matrizWa[i][j] = matrizInicialWa[i][j];
+				for (int i = 0;i < sizeMatrixAX;i++){
+					for (int j = 0; j < sizeMatrixAY*2;j++){
+						matrixWa[i][j] = matrixInitialWa[i][j];
 					}
 				}
-				for (int i = 0;i < tamanhoMatrizBX;i++){
-					for (int j = 0; j < tamanhoMatrizBY*2;j++){
-						matrizWb[i][j] = matrizInicialWb[i][j];
+				for (int i = 0;i < sizeMatrixBX;i++){
+					for (int j = 0; j < sizeMatrixBY*2;j++){
+						matrixWb[i][j] = matrixInitialWb[i][j];
 					}
 				}
-				for (int i = 0;i < tamanhoMatrizBX;i++){
-					for (int j = 0; j < tamanhoMatrizAY*2;j++){
-						matrizWab[i][j] = matrizInicialWab[i][j];
+				for (int i = 0;i < sizeMatrixBX;i++){
+					for (int j = 0; j < sizeMatrixAY*2;j++){
+						matrixWab[i][j] = matrixInitialWab[i][j];
 					}
 				}
 				
-				float matrizIA[tamanhoMatrizAX][tamanhoMatrizAY*2];
-				float matrizIB[tamanhoMatrizBX][tamanhoMatrizBY*2];	
+				float matrixIA[sizeMatrixAX][sizeMatrixAY*2];
+				float matrixIB[sizeMatrixBX][sizeMatrixBY*2];	
 	
-				float matrizIAc[tamanhoMatrizAX][tamanhoMatrizAY];
-				float matrizIBc[tamanhoMatrizBX][tamanhoMatrizBY];	
+				float matrixIAc[sizeMatrixAX][sizeMatrixAY];
+				float matrixIBc[sizeMatrixBX][sizeMatrixBY];	
 				
 				
-				/*LOOP DE ITERACAO*/
+				/*LOOP of ITERACTION*/
 				
-				for (int contadorIteracao = 0; contadorIteracao < iteracoes; contadorIteracao++){
-					for (int i = 0;i < tamanhoMatrizAX;i++){
-						for (int j = 0; j < tamanhoMatrizAY;j++){
-							somatorio += matrizA[i][j];	
+				for (int iteractionCounter = 0; iteractionCounter < iteractions; iteractionCounter++){
+					for (int i = 0;i < sizeMatrixAX;i++){
+						for (int j = 0; j < sizeMatrixAY;j++){
+							sum += matrixA[i][j];	
 						}
 					}	
-					cout << "matriz Ia " << endl;
-					for (int i = 0;i < tamanhoMatrizAX;i++){
-						for (int j = 0; j < tamanhoMatrizAY;j++){
-							matrizIA[i][j] = (matrizA[i][j] / somatorio);
-							cout << " " << matrizIA[i][j] << " ";
+					cout << "matrix Ia " << endl;
+					for (int i = 0;i < sizeMatrixAX;i++){
+						for (int j = 0; j < sizeMatrixAY;j++){
+							matrixIA[i][j] = (matrixA[i][j] / sum);
+							cout << " " << matrixIA[i][j] << " ";
 						}
 						cout << endl;
 					}
-					somatorio = 0;	
-					for (int i = 0;i < tamanhoMatrizBX;i++){
-						for (int j = 0; j < tamanhoMatrizBY;j++){
-							somatorio += matrizB[i][j];	
+					sum = 0;	
+					for (int i = 0;i < sizeMatrixBX;i++){
+						for (int j = 0; j < sizeMatrixBY;j++){
+							sum += matrixB[i][j];	
 						}
 					}	
-					cout << "matriz Ib " << endl;
-					for (int i = 0;i < tamanhoMatrizBX;i++){
-						for (int j = 0; j < tamanhoMatrizBY;j++){
-							matrizIB[i][j] = (matrizB[i][j] / somatorio);
-							cout << " " << matrizIB[i][j] << " ";
+					cout << "matrix Ib " << endl;
+					for (int i = 0;i < sizeMatrixBX;i++){
+						for (int j = 0; j < sizeMatrixBY;j++){
+							matrixIB[i][j] = (matrixB[i][j] / sum);
+							cout << " " << matrixIB[i][j] << " ";
 						}
 						cout << endl;
 					}
 					
 					
 					
-					cout << "matriz Iac " << endl;
-					for (int i = 0;i < tamanhoMatrizAX;i++){
-						for (int j = 0; j < tamanhoMatrizAY;j++){
-							matrizIAc[i][j] = (1 - matrizIA[i][j]);
-							cout << " " << matrizIAc[i][j] << " ";
+					cout << "matrix Iac " << endl;
+					for (int i = 0;i < sizeMatrixAX;i++){
+						for (int j = 0; j < sizeMatrixAY;j++){
+							matrixIAc[i][j] = (1 - matrixIA[i][j]);
+							cout << " " << matrixIAc[i][j] << " ";
 						}
 						cout << endl;
 					}
 					
-					cout << "matriz Ibc " << endl;
-					for (int i = 0;i < tamanhoMatrizBX;i++){
-						for (int j = 0; j < tamanhoMatrizBY;j++){
-							matrizIBc[i][j] = (1 - matrizIB[i][j]);
-							cout << " " << matrizIBc[i][j] << " ";
+					cout << "matrix Ibc " << endl;
+					for (int i = 0;i < sizeMatrixBX;i++){
+						for (int j = 0; j < sizeMatrixBY;j++){
+							matrixIBc[i][j] = (1 - matrixIB[i][j]);
+							cout << " " << matrixIBc[i][j] << " ";
 						}
 						cout << endl;
 					}
 					
-					for (int i = 0;i < tamanhoMatrizAX;i++){
-						for (int j = 0; j < tamanhoMatrizAY;j++){
-							matrizIA[i][j+tamanhoMatrizAY] = matrizIAc[i][j];
+					for (int i = 0;i < sizeMatrixAX;i++){
+						for (int j = 0; j < sizeMatrixAY;j++){
+							matrixIA[i][j+sizeMatrixAY] = matrixIAc[i][j];
 						}
 					}
 					
-					for (int i = 0;i < tamanhoMatrizBX;i++){
-						for (int j = 0; j < tamanhoMatrizBY;j++){
-							matrizIB[i][j+tamanhoMatrizBY] = matrizIBc[i][j];
+					for (int i = 0;i < sizeMatrixBX;i++){
+						for (int j = 0; j < sizeMatrixBY;j++){
+							matrixIB[i][j+sizeMatrixBY] = matrixIBc[i][j];
 						}
 					}
 					
-					cout << "matriz Ia definitivo " << endl;
-					for (int i = 0;i < tamanhoMatrizAX;i++){
-						for (int j = 0; j < tamanhoMatrizAY*2;j++){
-							cout << " " << matrizIA[i][j] << " ";
-						}
-						cout << endl;
-					}
-					
-					cout << "matriz Ib definitivo " << endl;
-					for (int i = 0;i < tamanhoMatrizBX;i++){
-						for (int j = 0; j < tamanhoMatrizBY*2;j++){
-							cout << " " << matrizIB[i][j] << " ";
+					cout << "matrix Ia definitive " << endl;
+					for (int i = 0;i < sizeMatrixAX;i++){
+						for (int j = 0; j < sizeMatrixAY*2;j++){
+							cout << " " << matrixIA[i][j] << " ";
 						}
 						cout << endl;
 					}
 					
-					float vetorTa[tamanhoMatrizAX];
-					for (int i = 0; i < tamanhoMatrizAX;i++){
-						vetorTa[i] = 0;
+					cout << "matrix Ib definitive " << endl;
+					for (int i = 0;i < sizeMatrixBX;i++){
+						for (int j = 0; j < sizeMatrixBY*2;j++){
+							cout << " " << matrixIB[i][j] << " ";
+						}
+						cout << endl;
 					}
 					
-					float vetorTb[tamanhoMatrizBX];
-					for (int i = 0; i < tamanhoMatrizBX;i++){
-						vetorTb[i] = 0;
+					float arrayTa[sizeMatrixAX];
+					for (int i = 0; i < sizeMatrixAX;i++){
+						arrayTa[i] = 0;
+					}
+					
+					float arrayTb[sizeMatrixBX];
+					for (int i = 0; i < sizeMatrixBX;i++){
+						arrayTb[i] = 0;
 					}
 					
 					/*art a*/
-					cout << "calculando T de A " << endl;
-					for (int i = 0; i < tamanhoMatrizAX;i++){
-						float somatorioLinha = 0;
-						float somatorioLinhaW = 0;
-						for (int j = 0; j < tamanhoMatrizAY*2;j++){
-							int menorValorAtual = 0;
-							int vetorUso[2] = {matrizIA[i][j],matrizWa[i][j]};
-							verificaMenorValorVetor(vetorUso,2,menorValorAtual);
-							somatorioLinha +=  menorValorAtual;
-							somatorioLinhaW += matrizWa[i][j]; 
+					cout << "calculating T of A " << endl;
+					for (int i = 0; i < sizeMatrixAX;i++){
+						float lineSum = 0;
+						float lineSumW = 0;
+						for (int j = 0; j < sizeMatrixAY*2;j++){
+							int lowerCurrentValue = 0;
+							int arrayLowerValue[2] = {matrixIA[i][j],matrixWa[i][j]};
+							verifyTheLowerValueArray(arrayLowerValue,2,lowerCurrentValue);
+							lineSum +=  lowerCurrentValue;
+							lineSumW += matrixWa[i][j]; 
 						}
-						vetorTa[i] = somatorioLinha / (alpha + somatorioLinhaW);
-						cout << "t " << i << " " << vetorTa[i] << endl;
+						arrayTa[i] = lineSum / (alpha + lineSumW);
+						cout << "t " << i << " " << arrayTa[i] << endl;
 					
 					}
 					
 					/*art b*/	
-					cout << "calculando T de B " << endl;
-					for (int i = 0; i < tamanhoMatrizBX;i++){
-						float somatorioLinha = 0;
-						float somatorioLinhaW = 0;
-						for (int j = 0; j < tamanhoMatrizBY*2;j++){
-							int menorValorAtual = 0;
-							int vetorUso[2] = {matrizIB[i][j],matrizWb[i][j]};
-							verificaMenorValorVetor(vetorUso,2,menorValorAtual);
-							somatorioLinha +=  menorValorAtual;
-							//somatorioLinha += (pow(matrizIB[i][j], matrizWb[i][j]));
-							somatorioLinhaW += matrizWb[i][j]; 
+					cout << "calculating T of B " << endl;
+					for (int i = 0; i < sizeMatrixBX;i++){
+						float lineSum = 0;
+						float lineSumW = 0;
+						for (int j = 0; j < sizeMatrixBY*2;j++){
+							int lowerCurrentValue = 0;
+							int arrayLowerValue[2] = {matrixIB[i][j],matrixWb[i][j]};
+							verifyTheLowerValueArray(arrayLowerValue,2,lowerCurrentValue);
+							lineSum +=  lowerCurrentValue;
+							lineSumW += matrixWb[i][j]; 
 						}
-						vetorTb[i] = somatorioLinha / (alpha + somatorioLinhaW);
-						cout << "t " << i << " " << vetorTb[i] << endl;
+						arrayTb[i] = lineSum / (alpha + lineSumW);
+						cout << "t " << i << " " << arrayTb[i] << endl;
 					}
 					
-					/*categoria ativa*/
-					int categoriaAtivaA = -1;
-					int categoriaAtivaB = -1;
+					/*category Active*/
+					int categoryActiveA = -1;
+					int categoryActiveB = -1;
 					
-					float maiorValor = -1;
-					for (int i = 0; i < tamanhoMatrizAX;i++){
-						if (vetorTa[i] > maiorValor){
-							cout << " vetorTa " << vetorTa[i] << endl;
-							cout << " maiorValor " << maiorValor << endl;
+					float biggestValue = -1;
+					for (int i = 0; i < sizeMatrixAX;i++){
+						if (arrayTa[i] > biggestValue){
+							cout << " arrayTa " << arrayTa[i] << endl;
+							cout << " biggestValue " << biggestValue << endl;
 							
-							if (vetorTa[i] > (maiorValor+0.001)){
-								maiorValor = vetorTa[i];
-								categoriaAtivaA = i;
+							if (arrayTa[i] > (biggestValue+0.001)){
+								biggestValue = arrayTa[i];
+								categoryActiveA = i;
 								
-								cout << " + " << vetorTa[i] << endl;
-								cout << " + " << categoriaAtivaA << endl;
+								cout << " + " << arrayTa[i] << endl;
+								cout << " + " << categoryActiveA << endl;
 							}
 						}	
 					}
-					cout << "categoria a "<< categoriaAtivaA << endl;
+					cout << "category a "<< categoryActiveA << endl;
 					
 					
-					maiorValor = -1;
-					for (int i = 0; i < tamanhoMatrizBX;i++){
-						if (vetorTb[i] > maiorValor){
-							categoriaAtivaB = i;
-							maiorValor = vetorTb[i];
-							cout << " + " << vetorTa[i] << endl;
-							cout << " + " << categoriaAtivaA << endl;
+					biggestValue = -1;
+					for (int i = 0; i < sizeMatrixBX;i++){
+						if (arrayTb[i] > biggestValue){
+							categoryActiveB = i;
+							biggestValue = arrayTb[i];
+							cout << " + " << arrayTa[i] << endl;
+							cout << " + " << categoryActiveA << endl;
 						}	
 					}
 					
-					cout << "categoria b "<< categoriaAtivaB << endl;
+					cout << "category b "<< categoryActiveB << endl;
 					
-					/*Teste de vigilancia*/
+					/*test of Sentry*/
 					
-					float testeVigilanciaA = 0;
-					float testeVigilanciaB = 0;
+					float testSentryA = 0;
+					float testSentryB = 0;
 					
-					float valorTesteVigilancia = 0, divisaoTesteVigilancia = 0;
-					/*para b*/
-					for (int i = 0; i < tamanhoMatrizBY*2; i++){
-						valorTesteVigilancia += pow(matrizIB[categoriaAtivaB][i],matrizWb[categoriaAtivaB][i]);
-						divisaoTesteVigilancia += matrizIB[categoriaAtivaB][i];
+					float valuetestSentry = 0, divtestSentry = 0;
+					/*for the b*/
+					for (int i = 0; i < sizeMatrixBY*2; i++){
+						valuetestSentry += pow(matrixIB[categoryActiveB][i],matrixWb[categoryActiveB][i]);
+						divtestSentry += matrixIB[categoryActiveB][i];
 					}
 					
-					valorTesteVigilancia = (valorTesteVigilancia / divisaoTesteVigilancia);
-					cout << "teste de vigilancia b " << valorTesteVigilancia << endl;
-					if (valorTesteVigilancia >= pb){
-						testeVigilanciaB = 1;
+					valuetestSentry = (valuetestSentry / divtestSentry);
+					cout << "test of Sentry b " << valuetestSentry << endl;
+					if (valuetestSentry >= pb){
+						testSentryB = 1;
 					}
 					
-					int contadorLimite = 1;
-					while (testeVigilanciaB == 0 && contadorLimite < tamanhoMatrizBX){
-						contadorLimite++;
-						vetorTb[categoriaAtivaB] = 0;
+					int limitCount = 1;
+					while (testSentryB == 0 && limitCount < sizeMatrixBX){
+						limitCount++;
+						arrayTb[categoryActiveB] = 0;
 						
-						maiorValor = -1;
-						categoriaAtivaB = -1;
-						for (int i = 0; i < tamanhoMatrizBX;i++){
-							if (vetorTb[i] > maiorValor){
-								categoriaAtivaB = i;
-								maiorValor = vetorTb[i];
+						biggestValue = -1;
+						categoryActiveB = -1;
+						for (int i = 0; i < sizeMatrixBX;i++){
+							if (arrayTb[i] > biggestValue){
+								categoryActiveB = i;
+								biggestValue = arrayTb[i];
 							}	
 						}		
 						
-						if (categoriaAtivaB >= 0){
-							/*para b*/
-							for (int i = 0; i < tamanhoMatrizBY; i++){
-								valorTesteVigilancia += pow(matrizIB[categoriaAtivaB][i],matrizWb[categoriaAtivaB][i]);
-								divisaoTesteVigilancia += matrizIB[categoriaAtivaB][i];
+						if (categoryActiveB >= 0){
+							/*for the b*/
+							for (int i = 0; i < sizeMatrixBY; i++){
+								valuetestSentry += pow(matrixIB[categoryActiveB][i],matrixWb[categoryActiveB][i]);
+								divtestSentry += matrixIB[categoryActiveB][i];
 							}
 							
-							valorTesteVigilancia = (valorTesteVigilancia / divisaoTesteVigilancia);
-							cout << "teste de vigilancia b " << valorTesteVigilancia << endl;
-							if (valorTesteVigilancia >= pb){
-								testeVigilanciaB = 1;
+							valuetestSentry = (valuetestSentry / divtestSentry);
+							cout << "test of Sentry b " << valuetestSentry << endl;
+							if (valuetestSentry >= pb){
+								testSentryB = 1;
 							}	
 						}
 							
 					}
 					
-					if (testeVigilanciaB == 0){
-						cout << "houve falha no teste de vigilancia de todas as categorias da matriz B" << endl;
+					if (testSentryB == 0){
+						cout << "sentry tests failed on the matrix:  B" << endl;
 						return 0;
 					}
 					
-					/*para a*/
-					for (int i = 0; i < tamanhoMatrizAY*2; i++){
-						valorTesteVigilancia += pow(matrizIA[categoriaAtivaA][i],matrizWa[categoriaAtivaA][i]);
-						divisaoTesteVigilancia += matrizIA[categoriaAtivaA][i];
+					/*for the a*/
+					for (int i = 0; i < sizeMatrixAY*2; i++){
+						valuetestSentry += pow(matrixIA[categoryActiveA][i],matrixWa[categoryActiveA][i]);
+						divtestSentry += matrixIA[categoryActiveA][i];
 					}
 					
-					valorTesteVigilancia = (valorTesteVigilancia / divisaoTesteVigilancia);
-					cout << "teste de vigilancia a " << valorTesteVigilancia << endl;
-					if (valorTesteVigilancia >= pa){
-						testeVigilanciaA = 1;
+					valuetestSentry = (valuetestSentry / divtestSentry);
+					cout << "test of Sentry a " << valuetestSentry << endl;
+					if (valuetestSentry >= pa){
+						testSentryA = 1;
 					}
 					
-					contadorLimite = 1;
-					while (testeVigilanciaA == 0 && contadorLimite < tamanhoMatrizAX){
-						contadorLimite++;
-						vetorTa[categoriaAtivaA] = 0;
+					limitCount = 1;
+					while (testSentryA == 0 && limitCount < sizeMatrixAX){
+						limitCount++;
+						arrayTa[categoryActiveA] = 0;
 						
-						maiorValor = -1;
-						categoriaAtivaA = -1;
-						for (int i = 0; i < tamanhoMatrizAX*2;i++){
-							if (vetorTa[i] > maiorValor){
-								categoriaAtivaA = i;
-								maiorValor = vetorTa[i];
+						biggestValue = -1;
+						categoryActiveA = -1;
+						for (int i = 0; i < sizeMatrixAX*2;i++){
+							if (arrayTa[i] > biggestValue){
+								categoryActiveA = i;
+								biggestValue = arrayTa[i];
 							}	
 						}		
 						
-						if (categoriaAtivaA >= 0){
-							/*para a*/
-							for (int i = 0; i < tamanhoMatrizAY*2; i++){
-								valorTesteVigilancia += pow(matrizIA[categoriaAtivaA][i],matrizWa[categoriaAtivaA][i]);
-								divisaoTesteVigilancia += matrizIA[categoriaAtivaA][i];
+						if (categoryActiveA >= 0){
+							/*for the a*/
+							for (int i = 0; i < sizeMatrixAY*2; i++){
+								valuetestSentry += pow(matrixIA[categoryActiveA][i],matrixWa[categoryActiveA][i]);
+								divtestSentry += matrixIA[categoryActiveA][i];
 							}
 							
-							valorTesteVigilancia = (valorTesteVigilancia / divisaoTesteVigilancia);
-							cout << "teste de vigilancia a " << valorTesteVigilancia << endl;
-							if (valorTesteVigilancia >= pa){
-								testeVigilanciaA = 1;
+							valuetestSentry = (valuetestSentry / divtestSentry);
+							cout << "test of Sentry a " << valuetestSentry << endl;
+							if (valuetestSentry >= pa){
+								testSentryA = 1;
 							}	
 						}		
 					}
 					
-					if (testeVigilanciaA == 0){
-						cout << "houve falha no teste de vigilancia de todas as categorias da matriz A" << endl;
+					if (testSentryA == 0){
+						cout << "sentry tests failed on the matrix:  A" << endl;
 						return 0;
 					}
 					
 					/*match tracking*/	
-					float matrizYA[tamanhoMatrizBX][tamanhoMatrizAY];
-					float matrizYB[tamanhoMatrizBX][tamanhoMatrizAY];
+					float matrixYA[sizeMatrixBX][sizeMatrixAY];
+					float matrixYB[sizeMatrixBX][sizeMatrixAY];
 					
-					for (int i = 0; i < tamanhoMatrizBX; i++){
-						for (int j = 0; j < tamanhoMatrizAY; j++){
-							matrizYA[i][j] = 0;
-							matrizYB[i][j] = 0;
+					for (int i = 0; i < sizeMatrixBX; i++){
+						for (int j = 0; j < sizeMatrixAY; j++){
+							matrixYA[i][j] = 0;
+							matrixYB[i][j] = 0;
 						}
 					}
 					
-					matrizYA[0][categoriaAtivaA] = 1;
-					matrizYB[0][categoriaAtivaB] = 1;
+					matrixYA[0][categoryActiveA] = 1;
+					matrixYB[0][categoryActiveB] = 1;
 					
-					float valorMatchTracking = 0, divisaoMatchTracking = 0;
-					for (int i = 0; i < tamanhoMatrizAY; i++){
-						valorMatchTracking += pow(matrizYA[0][categoriaAtivaA],matrizWab[categoriaAtivaA][i]);
-						divisaoMatchTracking += matrizYA[0][categoriaAtivaA];
+					float valueMatchTracking = 0, divMatchTracking = 0;
+					for (int i = 0; i < sizeMatrixAY; i++){
+						valueMatchTracking += pow(matrixYA[0][categoryActiveA],matrixWab[categoryActiveA][i]);
+						divMatchTracking += matrixYA[0][categoryActiveA];
 					}
 					
-					valorMatchTracking = (valorMatchTracking / divisaoMatchTracking);
+					valueMatchTracking = (valueMatchTracking / divMatchTracking);
 					
-					/*loop de match tracking - IMPORTANTE*/
-					contadorLimite = 1;
-					while (testeVigilanciaA == 0 && contadorLimite < (tamanhoMatrizBX*tamanhoMatrizAX)){
-						contadorLimite++;
+					/*loop of match tracking - IMPORTANTE*/
+					limitCount = 1;
+					while (testSentryA == 0 && limitCount < (sizeMatrixBX*sizeMatrixAX)){
+						limitCount++;
 						
-						/*determinando o vt e fazendo mais uma vez o teste de vigilancia*/
-						for (int x = 0; x < tamanhoMatrizBX; x++){
-							for (int y = 0; y < tamanhoMatrizAX; y++){
-								/*para A*/	
+						/*verify if VT needs to make once again the test of Sentry*/
+						for (int x = 0; x < sizeMatrixBX; x++){
+							for (int y = 0; y < sizeMatrixAX; y++){
+								/*for the A*/	
 								/*art a*/
-								cout << "calculando T de A " << endl;
-								for (int i = 0; i < tamanhoMatrizAX;i++){
-									float somatorioLinha = 0;
-									float somatorioLinhaW = 0;
-									for (int j = 0; j < tamanhoMatrizAY*2;j++){
-										int menorValorAtual = 0;
-										int vetorUso[2] = {matrizIA[i][j],matrizWa[i][j]};
-										verificaMenorValorVetor(vetorUso,2,menorValorAtual);
-										somatorioLinha +=  menorValorAtual;
-										//somatorioLinha += (pow(matrizIA[i][j], matrizWa[i][j]));
-										somatorioLinhaW += matrizWa[i][j]; 
+								cout << "calculating T of A " << endl;
+								for (int i = 0; i < sizeMatrixAX;i++){
+									float lineSum = 0;
+									float lineSumW = 0;
+									for (int j = 0; j < sizeMatrixAY*2;j++){
+										int lowerCurrentValue = 0;
+										int arrayLowerValue[2] = {matrixIA[i][j],matrixWa[i][j]};
+										verifyTheLowerValueArray(arrayLowerValue,2,lowerCurrentValue);
+										lineSum +=  lowerCurrentValue;
+										lineSumW += matrixWa[i][j]; 
 									}
-									vetorTa[i] = somatorioLinha / (alpha + somatorioLinhaW);
-									cout << "t " << i << " " << vetorTa[i] << endl;
+									arrayTa[i] = lineSum / (alpha + lineSumW);
+									cout << "t " << i << " " << arrayTa[i] << endl;
 								
 								}	
 								
-								maiorValor = -1;
-								for (int i = 0; i < tamanhoMatrizAX;i++){
-									if (vetorTa[i] > maiorValor){
-										cout << " vetorTa " << vetorTa[i] << endl;
-										cout << " maiorValor " << maiorValor << endl;
+								biggestValue = -1;
+								for (int i = 0; i < sizeMatrixAX;i++){
+									if (arrayTa[i] > biggestValue){
+										cout << " arrayTa " << arrayTa[i] << endl;
+										cout << " biggestValue " << biggestValue << endl;
 										
-										if (vetorTa[i] > (maiorValor+0.001)){
-											maiorValor = vetorTa[i];
-											categoriaAtivaA = i;
+										if (arrayTa[i] > (biggestValue+0.001)){
+											biggestValue = arrayTa[i];
+											categoryActiveA = i;
 											
-											cout << " + " << vetorTa[i] << endl;
-											cout << " + " << categoriaAtivaA << endl;
+											cout << " + " << arrayTa[i] << endl;
+											cout << " + " << categoryActiveA << endl;
 										}
 									}	
 								}
-								cout << "categoria a "<< categoriaAtivaA << endl;
+								cout << "category a "<< categoryActiveA << endl;
 								
-								int contadorLimiteA = 1;
-								while (testeVigilanciaA == 0 && contadorLimiteA < tamanhoMatrizAX){
-									contadorLimiteA++;
-									vetorTa[categoriaAtivaA] = 0;
+								int limitCountA = 1;
+								while (testSentryA == 0 && limitCountA < sizeMatrixAX){
+									limitCountA++;
+									arrayTa[categoryActiveA] = 0;
 									
-									maiorValor = -1;
-									categoriaAtivaA = -1;
-									for (int i = 0; i < tamanhoMatrizAX*2;i++){
-										if (vetorTa[i] > maiorValor){
-											categoriaAtivaA = i;
-											maiorValor = vetorTa[i];
+									biggestValue = -1;
+									categoryActiveA = -1;
+									for (int i = 0; i < sizeMatrixAX*2;i++){
+										if (arrayTa[i] > biggestValue){
+											categoryActiveA = i;
+											biggestValue = arrayTa[i];
 										}	
 									}		
 									
-									if (categoriaAtivaA >= 0){
-										/*para a*/
-										for (int i = 0; i < tamanhoMatrizAY*2; i++){
-											valorTesteVigilancia += pow(matrizIA[categoriaAtivaA][i],matrizWa[categoriaAtivaA][i]);
-											divisaoTesteVigilancia += matrizIA[categoriaAtivaA][i];
+									if (categoryActiveA >= 0){
+										/*for the a*/
+										for (int i = 0; i < sizeMatrixAY*2; i++){
+											valuetestSentry += pow(matrixIA[categoryActiveA][i],matrixWa[categoryActiveA][i]);
+											divtestSentry += matrixIA[categoryActiveA][i];
 										}
 										
-										valorTesteVigilancia = (valorTesteVigilancia / divisaoTesteVigilancia);
-										cout << "teste de vigilancia a " << valorTesteVigilancia << endl;
-										if (valorTesteVigilancia >= pa){
-											testeVigilanciaA = 1;
+										valuetestSentry = (valuetestSentry / divtestSentry);
+										cout << "test of Sentry a " << valuetestSentry << endl;
+										if (valuetestSentry >= pa){
+											testSentryA = 1;
 										}	
 									}		
 								}
 								
-								if (testeVigilanciaA == 0){
-									cout << "houve falha no teste de vigilancia de todas as categorias da matriz A" << endl;
+								if (testSentryA == 0){
+									cout << "sentry tests failed on the matrix:  A" << endl;
 									return 0;
 								}	
 								
-								for (int i = 0; i < tamanhoMatrizBX; i++){
-									for (int j = 0; j < tamanhoMatrizAY; j++){
-											matrizYA[i][j] = 0;
-											matrizYB[i][j] = 0;
+								for (int i = 0; i < sizeMatrixBX; i++){
+									for (int j = 0; j < sizeMatrixAY; j++){
+											matrixYA[i][j] = 0;
+											matrixYB[i][j] = 0;
 										}
 									}
 									
-								matrizYA[0][categoriaAtivaA] = 1;
-								matrizYB[0][categoriaAtivaB] = 1;
+								matrixYA[0][categoryActiveA] = 1;
+								matrixYB[0][categoryActiveB] = 1;
 									
-								valorMatchTracking = 0, divisaoMatchTracking = 0;
-								for (int i = 0; i < tamanhoMatrizAY; i++){
-									valorMatchTracking += pow(matrizYA[0][categoriaAtivaA],matrizWab[categoriaAtivaA][i]);
-									divisaoMatchTracking += matrizYA[0][categoriaAtivaA];
+								valueMatchTracking = 0, divMatchTracking = 0;
+								for (int i = 0; i < sizeMatrixAY; i++){
+									valueMatchTracking += pow(matrixYA[0][categoryActiveA],matrixWab[categoryActiveA][i]);
+									divMatchTracking += matrixYA[0][categoryActiveA];
 								}
 									
-								valorMatchTracking = (valorMatchTracking / divisaoMatchTracking);
+								valueMatchTracking = (valueMatchTracking / divMatchTracking);
 								
-								if (valorMatchTracking < pba){
+								if (valueMatchTracking < pba){
 									cout << "match tracking invalido " << endl;
 									return 0;
 								}
 							}
 							
-							/*para B*/
+							/*for the B*/
 							/*art b*/	
-							cout << "calculando T de B " << endl;
-							for (int i = 0; i < tamanhoMatrizBX;i++){
-								float somatorioLinha = 0;
-								float somatorioLinhaW = 0;
-								for (int j = 0; j < tamanhoMatrizBY*2;j++){
-									//somatorioLinha += (pow(matrizIB[i][j], matrizWb[i][j]));
-									int menorValorAtual = 0;
-									int vetorUso[2] = {matrizIB[i][j],matrizWb[i][j]};
-									verificaMenorValorVetor(vetorUso,2,menorValorAtual);
-									somatorioLinha +=  menorValorAtual;
-									somatorioLinhaW += matrizWb[i][j]; 
+							cout << "calculating T of B " << endl;
+							for (int i = 0; i < sizeMatrixBX;i++){
+								float lineSum = 0;
+								float lineSumW = 0;
+								for (int j = 0; j < sizeMatrixBY*2;j++){
+									int lowerCurrentValue = 0;
+									int arrayLowerValue[2] = {matrixIB[i][j],matrixWb[i][j]};
+									verifyTheLowerValueArray(arrayLowerValue,2,lowerCurrentValue);
+									lineSum +=  lowerCurrentValue;
+									lineSumW += matrixWb[i][j]; 
 								}
-								vetorTb[i] = somatorioLinha / (alpha + somatorioLinhaW);
-								cout << "t " << i << " " << vetorTb[i] << endl;
+								arrayTb[i] = lineSum / (alpha + lineSumW);
+								cout << "t " << i << " " << arrayTb[i] << endl;
 							}
 							
-							maiorValor = -1;
-							for (int i = 0; i < tamanhoMatrizBX;i++){
-								if (vetorTb[i] > maiorValor){
-									categoriaAtivaB = i;
-									maiorValor = vetorTb[i];
-									cout << " + " << vetorTa[i] << endl;
-									cout << " + " << categoriaAtivaA << endl;
+							biggestValue = -1;
+							for (int i = 0; i < sizeMatrixBX;i++){
+								if (arrayTb[i] > biggestValue){
+									categoryActiveB = i;
+									biggestValue = arrayTb[i];
+									cout << " + " << arrayTa[i] << endl;
+									cout << " + " << categoryActiveA << endl;
 								}	
 							}
 							
-							cout << "categoria b "<< categoriaAtivaB << endl;
+							cout << "category b "<< categoryActiveB << endl;
 								
-							int contadorLimiteB = 1;
-							while (testeVigilanciaB == 0 && contadorLimiteB < tamanhoMatrizBX){
-								contadorLimiteB++;
-								vetorTb[categoriaAtivaB] = 0;
+							int limitCountB = 1;
+							while (testSentryB == 0 && limitCountB < sizeMatrixBX){
+								limitCountB++;
+								arrayTb[categoryActiveB] = 0;
 								
-								maiorValor = -1;
-								categoriaAtivaB = -1;
-								for (int i = 0; i < tamanhoMatrizBX;i++){
-									if (vetorTb[i] > maiorValor){
-										categoriaAtivaB = i;
-										maiorValor = vetorTb[i];
+								biggestValue = -1;
+								categoryActiveB = -1;
+								for (int i = 0; i < sizeMatrixBX;i++){
+									if (arrayTb[i] > biggestValue){
+										categoryActiveB = i;
+										biggestValue = arrayTb[i];
 									}	
 								}		
 								
-								if (categoriaAtivaB >= 0){
-									/*para b*/
-									for (int i = 0; i < tamanhoMatrizBY; i++){
-										valorTesteVigilancia += pow(matrizIB[categoriaAtivaB][i],matrizWb[categoriaAtivaB][i]);
-										divisaoTesteVigilancia += matrizIB[categoriaAtivaB][i];
+								if (categoryActiveB >= 0){
+									/*for the b*/
+									for (int i = 0; i < sizeMatrixBY; i++){
+										valuetestSentry += pow(matrixIB[categoryActiveB][i],matrixWb[categoryActiveB][i]);
+										divtestSentry += matrixIB[categoryActiveB][i];
 									}
 									
-									valorTesteVigilancia = (valorTesteVigilancia / divisaoTesteVigilancia);
-									cout << "teste de vigilancia b " << valorTesteVigilancia << endl;
-									if (valorTesteVigilancia >= pb){
-										testeVigilanciaB = 1;
+									valuetestSentry = (valuetestSentry / divtestSentry);
+									cout << "test of Sentry b " << valuetestSentry << endl;
+									if (valuetestSentry >= pb){
+										testSentryB = 1;
 									}	
 								}			
 							}
 							
-							if (testeVigilanciaB == 0){
-								cout << "houve falha no teste de vigilancia de todas as categorias da matriz B" << endl;
+							if (testSentryB == 0){
+								cout << "sentry tests failed on the matrix:  B" << endl;
 								return 0;
 							}
 						
 						}
 					}
 					
-					/*atualizacao dos pesos*/
+					/*weight update*/
 					
-					float vetorAtualizacaoPesosA1[tamanhoMatrizAY*2];
-					float vetorAtualizacaoPesosA2[tamanhoMatrizAY*2];
+					float arrayweightUpdateA1[sizeMatrixAY*2];
+					float arrayweightUpdateA2[sizeMatrixAY*2];
 					
-					float vetorAtualizacaoPesosB1[tamanhoMatrizBY*2];
-					float vetorAtualizacaoPesosB2[tamanhoMatrizBY*2];
+					float arrayweightUpdateB1[sizeMatrixBY*2];
+					float arrayweightUpdateB2[sizeMatrixBY*2];
 					
-					for (int i = 0; i < tamanhoMatrizAY*2; i++){
-						vetorAtualizacaoPesosA1[i] =  beta * (pow(matrizIA[categoriaAtivaA][i],matrizWa[categoriaAtivaA][i]));
-						vetorAtualizacaoPesosA2[i] =  (1 - beta) * (matrizWa[categoriaAtivaA][i]);		
-						vetorAtualizacaoPesosA1[i] += vetorAtualizacaoPesosA2[i]; 
-						matrizWa[categoriaAtivaA][i] = vetorAtualizacaoPesosA1[i];
+					for (int i = 0; i < sizeMatrixAY*2; i++){
+						arrayweightUpdateA1[i] =  beta * (pow(matrixIA[categoryActiveA][i],matrixWa[categoryActiveA][i]));
+						arrayweightUpdateA2[i] =  (1 - beta) * (matrixWa[categoryActiveA][i]);		
+						arrayweightUpdateA1[i] += arrayweightUpdateA2[i]; 
+						matrixWa[categoryActiveA][i] = arrayweightUpdateA1[i];
 					}
 					
-					for (int i = 0; i < tamanhoMatrizBY*2; i++){
-						vetorAtualizacaoPesosB1[i] =  beta * (pow(matrizIB[categoriaAtivaB][i],matrizWb[categoriaAtivaB][i]));
-						vetorAtualizacaoPesosB2[i] =  (1 - beta) * (matrizWb[categoriaAtivaB][i]);		
-						vetorAtualizacaoPesosB1[i] += vetorAtualizacaoPesosB2[i]; 
-						matrizWb[categoriaAtivaB][i] = vetorAtualizacaoPesosB1[i];
+					for (int i = 0; i < sizeMatrixBY*2; i++){
+						arrayweightUpdateB1[i] =  beta * (pow(matrixIB[categoryActiveB][i],matrixWb[categoryActiveB][i]));
+						arrayweightUpdateB2[i] =  (1 - beta) * (matrixWb[categoryActiveB][i]);		
+						arrayweightUpdateB1[i] += arrayweightUpdateB2[i]; 
+						matrixWb[categoryActiveB][i] = arrayweightUpdateB1[i];
 					}
 					
-					float vetorAtualizacaoPesosAB[tamanhoMatrizAY];
-					for (int i = 0; i < tamanhoMatrizAY; i++){
-						vetorAtualizacaoPesosAB[i] = 0;
+					float arrayweightUpdateAB[sizeMatrixAY];
+					for (int i = 0; i < sizeMatrixAY; i++){
+						arrayweightUpdateAB[i] = 0;
 					}
-					cout << "categoria a " << categoriaAtivaA << endl; 
-					vetorAtualizacaoPesosAB[categoriaAtivaA] = 1;
+					cout << "category a " << categoryActiveA << endl; 
+					arrayweightUpdateAB[categoryActiveA] = 1;
 					
-					for (int i = 0; i < tamanhoMatrizAY; i++){
-						matrizWab[categoriaAtivaB][i] = vetorAtualizacaoPesosAB[i];
+					for (int i = 0; i < sizeMatrixAY; i++){
+						matrixWab[categoryActiveB][i] = arrayweightUpdateAB[i];
 					}
 						
-					cout << "Impressao de pesos " << endl;
+					cout << "PRINTING THE WEIGHTS " << endl;
 					cout << "Wa " << endl;
-					for (int i = 0;i < tamanhoMatrizAX;i++){
-						for (int j = 0; j < tamanhoMatrizAY*2;j++){
-							cout << matrizWa[i][j] << " ";
+					for (int i = 0;i < sizeMatrixAX;i++){
+						for (int j = 0; j < sizeMatrixAY*2;j++){
+							cout << matrixWa[i][j] << " ";
 						}
 						cout << endl;
 					}
 					cout << "Wb " << endl;
-					for (int i = 0;i < tamanhoMatrizBX;i++){
-						for (int j = 0; j < tamanhoMatrizBY*2;j++){
-							cout << matrizWb[i][j] << " ";
+					for (int i = 0;i < sizeMatrixBX;i++){
+						for (int j = 0; j < sizeMatrixBY*2;j++){
+							cout << matrixWb[i][j] << " ";
 						}
 						cout << endl;
 					}
 					cout << "Wab " << endl;
-					for (int i = 0;i < tamanhoMatrizBX;i++){
-						for (int j = 0; j < tamanhoMatrizAY;j++){
-							cout << matrizWab[i][j] << " ";
+					for (int i = 0;i < sizeMatrixBX;i++){
+						for (int j = 0; j < sizeMatrixAY;j++){
+							cout << matrixWab[i][j] << " ";
 						}
 						cout << endl;
 					}		
 				}	
-				/*GUARDA OS NOVOS PESOS GERADOS PARA A MATRIZ DE RECONHECIMENTO PARA QUE NAO FIQUE PERDIDO NA MEMORIA*/
+				/*SAVE THE NEW WEIGHT VALUES TO MAKE THE RECOGNTION LATER*/
 			
-				tamanhoMatrizAXReconhecimento = tamanhoMatrizAX;
-				tamanhoMatrizAYReconhecimento = tamanhoMatrizAY*2;
-				tamanhoMatrizBXReconhecimento = tamanhoMatrizBX;
-				tamanhoMatrizBYReconhecimento = tamanhoMatrizBY*2;
+				sizeMatrixAXRecogntion = sizeMatrixAX;
+				sizeMatrixAYRecogntion = sizeMatrixAY*2;
+				sizeMatrixBXRecogntion = sizeMatrixBX;
+				sizeMatrixBYRecogntion = sizeMatrixBY*2;
 				
-				for (int i = 0; i < tamanhoMatrizAXReconhecimento; i++){
-					for (int j = 0; j < tamanhoMatrizAYReconhecimento; j++){
-						matrizReconhecimentoWa[i][j] = matrizWa[i][j];	
+				for (int i = 0; i < sizeMatrixAXRecogntion; i++){
+					for (int j = 0; j < sizeMatrixAYRecogntion; j++){
+						matrixRecogntionWa[i][j] = matrixWa[i][j];	
 					}
 				}
 				
-				for (int i = 0; i < tamanhoMatrizBXReconhecimento; i++){
-					for (int j = 0; j < tamanhoMatrizBYReconhecimento; j++){
-						matrizReconhecimentoWb[i][j] = matrizWb[i][j];	
+				for (int i = 0; i < sizeMatrixBXRecogntion; i++){
+					for (int j = 0; j < sizeMatrixBYRecogntion; j++){
+						matrixRecogntionWb[i][j] = matrixWb[i][j];	
 					}
 				}
 				
-				for (int i = 0; i < tamanhoMatrizAXReconhecimento; i++){
-					for (int j = 0; j < tamanhoMatrizBXReconhecimento; j++){
-						matrizReconhecimentoWab[i][j] = matrizWab[i][j];	
+				for (int i = 0; i < sizeMatrixAXRecogntion; i++){
+					for (int j = 0; j < sizeMatrixBXRecogntion; j++){
+						matrixRecogntionWab[i][j] = matrixWab[i][j];	
 					}
 				}
 			}
 			
-			/*FINALIZANDO TRANSACOES COM ITERACAO*/
+			/*FINISHING THE ITERACTIONS*/
 
-			cout << "ITERACAO ENCERRADA" << endl;
+			cout << "ITERACTION FINISHED" << endl;
 			system("pause");			
 			break;
 		}
 	}	
 				
-	cout << "APLICACAO ENCERRADA! OBRIGADO POR UTILIZAR" << endl;
+	cout << "SYSTEM FINISHED! THANKS FOR USING!" << endl;
 			
 	system("pause");
 	return 0;
