@@ -3,6 +3,7 @@ College project for discipline of "Sistemas Inteligentes" - UNISALESIANO Araçat
 
 
 Author: Lucas da Silva
+
 Advisor: James Clauton da Silva
 
 This project makes the simulation of the neural network ART MAP FUZZY. Just take the file and compile it using DEV-C++ compiler.
